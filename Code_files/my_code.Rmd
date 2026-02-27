@@ -174,9 +174,31 @@ p1_box <-
             vjust = 0, # sets vertical alignment
             size = 3.5, # sets text size of label
             family = "dm") # sets font family of label
-# shows plot 1
-p1_box
+
+p1_box # shows plot 1
 
 # saves plot 1 with specifications
 ggsave("plot1_sleep_by_day.png", p1_box, width = 9, height = 5, dpi = 300)
+```
+
+# Plot 2: Scatter + Bins (Sleep duration vs efficiency)
+```{r}
+p2_sleep_scatter <- 
+  ggplot(cleaned_data, # uses cleaned data
+         aes(x = sleep_efficiency, # x-axis is continuous predictor (weekday)
+             y = time_slept_minutes)) + # y-axis is response (sleep duration)
+  geom_bin2d(bins = 9) +   # Create rectangular bins instead of individual points 
+  scale_fill_gradient( # Define the color gradient for bin counts
+    name = "Number of days", # sets legend title
+    low = "green", # color for bins with fewer observations
+    high = "darkblue") + # color for bins with more observations
+  labs(
+    title = "Sleep Duration vs Efficiency Scatter with Bins", # sets plot title
+    x = "Sleep Efficiency (range 0-1)", # sets x-axis title
+    y = "Time slept (minutes)") + # sets y-axis title
+  base_theme # uses preset base theme
+
+p2_sleep_scatter # shows plot 2
+# saves plot 2 with specifications
+ggsave("plot2_duration_vs_efficiency.png", p2_sleep_scatter, width = 7.5, height = 5, dpi = 300)
 ```
