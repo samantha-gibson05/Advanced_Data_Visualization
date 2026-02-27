@@ -28,6 +28,30 @@ library(ggplot2) # loads in ggplot2 package
 library(fontawesome) # loads in fontawesome package
 
 # Stores my personal data as an object called my_data
-my_data <- read.csv(here('data',"193DS data - stress (4).csv")) 
+raw_data <- read.csv(here('data',"193DS data - stress (4).csv")) 
 ```
+**Cleaning data**
+```{r}
+# Create a cleaned version of the raw dataset
+cleaned_data <- raw_data |> 
+  # Standardize column names:converts all column names to lowercase with underscores
+  clean_names() |> 
+  mutate(
+    # Convert date column from character (mm/dd/yyyy) to proper Date format
+    date = mdy(date_mm_dd_yyyy),
+    # Convert day_of_week into an ordered factor
+    day_of_week = factor(day_of_week, 
+                         levels = c("Monday",
+                                    "Tuesday", 
+                                    "Wednesday",
+                                    "Thursday",
+                                    "Friday",
+                                    "Saturday",
+                                    "Sunday")),
+    # Convert sleep efficiency from % style character to numeric proportion 
+    sleep_efficiency = parse_number(as.character(sleep_efficiency)) / 100,
+    # Convert Pilates variable to categorical factor
+    pilates = factor(pilates, levels = c("No","Yes")))
+```
+
 
