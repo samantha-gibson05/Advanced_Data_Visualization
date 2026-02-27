@@ -54,7 +54,7 @@ cleaned_data <- raw_data |>
     pilates = factor(pilates, levels = c("No","Yes")))
 ```
 
-Stores Important Info that Changes as Data Set Updates:
+Stores important info that changes as data set updates:
 
 ```{r}
 # Calculate the total number of observations (days recorded)
@@ -64,3 +64,31 @@ min_date <- min(cleaned_data$date, na.rm = TRUE)
 # Identify the most recent date in the dataset
 max_date <- max(cleaned_data$date, na.rm = TRUE)
 ```
+
+Create base theme + aesthetics (xxx might change later)
+```{r}
+# Loads custom fonts 
+# "Playfair Display" will be used for titles
+# "Space Grotesk" will be used for axis labels and body text 
+font_add_google("Playfair Display", "playfair")
+font_add_google("Space Grotesk", "space")
+# Activate showtext so ggplot can render fonts
+showtext_auto()
+
+# Create a reusable base theme for all plots
+base_theme <- theme_minimal(base_family = "dm") +
+  theme(
+    # Main title styling 
+    plot.title = (element_text(face = "bold", size = 16)),
+    # Subtitle styling
+    plot.subtitle = element_text(size = 11),
+    # Axis title styling
+    axis.title = element_text(size = 11),
+    # Axis tick label styling
+    axis.text = element_text(size = 10),
+    # Legend title styling
+    legend.title = element_text(size = 10),
+    # Legend text styling
+    legend.text = element_text(size = 9))
+```
+
