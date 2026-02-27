@@ -92,3 +92,91 @@ base_theme <- theme_minimal(base_family = "dm") +
     legend.text = element_text(size = 9))
 ```
 
+# Plot 1: Boxplot + jitter (Sleep by day of week)
+
+```{r}
+# Compute overall median sleep duration across all days (for reference line)
+overall_median_sleep <- median(
+  cleaned_data$time_slept_minutes, # numeric vector of sleep minutes
+  na.rm = TRUE) # ignore missing values
+
+# Define a custom color palette for each day of the week
+week_colors <- c(
+  "Monday" = "darkgoldenrod1",
+  "Tuesday" = "mediumvioletred",
+  "Wednesday" = "darkolivegreen",
+  "Thursday" = "cyan4",
+  "Friday" = "indianred",
+  "Saturday" = "darkorange2",
+  "Sunday" = "lightblue")
+
+# Compute median sleep for each day of the week
+med_by_day <- cleaned_data |> # uses cleaned data
+  group_by(day_of_week) |> # group observations by weekday
+  summarize(med_sleep = median(time_slept_minutes, # compute median sleep within each day
+                               na.rm = TRUE), # remove missing values if any
+            .groups = "drop") # ungroups df
+
+# Identify the day with the highest median sleep
+highlight_day <- med_by_day |>
+  slice_max(med_sleep, n = 1) |> # select row with maximum median sleep
+  pull(day_of_week) |> # extract just the weekday value
+  as.character() # convert to character
+
+# Build the boxplot visualization
+p1_box <- 
+  ggplot(
+    cleaned_data, # uses cleaned data
+    aes(x = day_of_week, # x axis is categorical predictor (weekday)
+        y = time_slept_minutes)) + # y axis is response variable (sleep duration)
+  geom_hline( # Add horizontal line at overall median sleep
+    yintercept = overall_median_sleep, # location of reference line at median
+    linetype = "dashed", # styles line as dashed
+    linewidth = 0.8) + # sets thickness of line
+  geom_boxplot( # Draw boxplots for each day
+    aes(fill = day_of_week), # colors boxes by weekday
+    width = 0.65, # sets width of boxes
+    alpha = 0.45, # sets transparency level of boxes
+    outlier.shape = NA) + # suppress default outlier points
+  geom_jitter( # Add jittered points to show individual observations
+    aes(color = day_of_week), # colors points by weekday
+    width = 0.12, # sets horizontal jitter
+    height = 0, # no vertical jitter
+    alpha = 0.6, # sets transparency level
+    size = 2) + # sets point size
+  scale_fill_manual(values = week_colors) + # Apply manual fill color scale
+  scale_color_manual(values = week_colors, # Apply manual fill color scale
+                     guide = "none") + # remove duplicate legend
+  labs(
+    title = "Sleep Duration by Day of Week", # sets plot title
+    x = "Day of week", # sets x-axis title
+    y = "Time Slept (minutes)") + # sets y-axis title
+  base_theme + # uses preset base theme
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) + # Rotate x-axis labels 
+  # Add curved arrow annotation highlighting highest median day
+  geom_curve(
+    data = NULL, # uses plot-level data
+    aes(x = highlight_day , # sets arrow starting x-position (weekday)
+        # sets arrow starting y-position (weekday)
+        y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.01, 
+        xend = highlight_day , # sets arrow ending x-position (weekday)
+        # sets arrow ending y-position (weekday)
+        yend = med_by_day$med_sleep[med_by_day$day_of_week == highlight_day] * 1.05),
+    curvature = -0.35, # sets degree of curve
+    arrow = arrow(length = unit(0.1, "inches")), # sets arrowhead size
+    inherit.aes = FALSE) + # prevents inheriting global aesthetics
+  annotate( "text", # Add text label describing highlighted day
+            x = highlight_day, 
+            # sets vertical position of label
+            y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.03,
+            # creates content of label
+            label = paste0("Highest median: ", highlight_day), 
+            vjust = 0, # sets vertical alignment
+            size = 3.5, # sets text size of label
+            family = "dm") # sets font family of label
+# shows plot 1
+p1_box
+
+# saves plot 1 with specifications
+ggsave("plot1_sleep_by_day.png", p1_box, width = 9, height = 5, dpi = 300)
+```
