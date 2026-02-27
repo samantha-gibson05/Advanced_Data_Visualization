@@ -54,4 +54,13 @@ cleaned_data <- raw_data |>
     pilates = factor(pilates, levels = c("No","Yes")))
 ```
 
+Stores Important Info that Changes as Data Set Updates:
 
+```{r}
+# Calculate the total number of observations (days recorded)
+n_obs <- nrow(cleaned_data)
+# Identify the earliest date in the dataset
+min_date <- min(cleaned_data$date, na.rm = TRUE)
+# Identify the most recent date in the dataset
+max_date <- max(cleaned_data$date, na.rm = TRUE)
+```
