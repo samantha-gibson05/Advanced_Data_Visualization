@@ -156,11 +156,11 @@ p1_box <-
   # Add curved arrow annotation highlighting highest median day
   geom_curve(
     data = NULL, # uses plot-level data
-    aes(x = highlight_day , # sets arrow starting x-position (weekday)
-        # sets arrow starting y-position (weekday)
+    aes(x = highlight_day , # sets arrow starting x-position 
+        # sets arrow starting y-position 
         y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.01, 
-        xend = highlight_day , # sets arrow ending x-position (weekday)
-        # sets arrow ending y-position (weekday)
+        xend = highlight_day , # sets arrow ending x-position 
+        # sets arrow ending y-position 
         yend = med_by_day$med_sleep[med_by_day$day_of_week == highlight_day] * 1.05),
     curvature = -0.35, # sets degree of curve
     arrow = arrow(length = unit(0.1, "inches")), # sets arrowhead size
@@ -266,7 +266,7 @@ p4_bubble <-
   labs(title = "Steps vs Sleep (Sized by Time Stressed)", # sets title
        x = "Steps", # sets x-axis title
        y = "Time stressed (minutes)") + # sets y-axis title
-  base_theme
+  base_theme # uses base theme
 
 p4_bubble # shows plot 4
 # saves plot 4 with specifications
@@ -274,4 +274,55 @@ ggsave("plot4_steps_stress_efficiency.png", p4_bubble, width = 7.5, height = 5, 
 ```
 
 
+# Plot 5: Lollipop chart (Mean sleep by hours worked)
+```{r}
+# Summary by hours worked 
+cleaned_data_work_summary <- cleaned_data |> # uses cleaned data
+  group_by(hours_worked) |> # groups observations by hours worked
+  summarise(mean_sleep = mean(time_slept_minutes), # compute mean sleep per group
+    n_days = n(), # counts number of days in each group
+    .groups = "drop") # ungroups df
+
+overall_mean_sleep <- mean(cleaned_data$time_slept_minutes) # finds overall mean
+
+highlight_work <- cleaned_data_work_summary |> # uses summary by hours worked
+  slice_max(mean_sleep, n = 1)  # selects row with highest mean_sleep
+
+p5_lollipop <- 
+  ggplot(cleaned_data_work_summary, # uses summary by hours worked
+         aes(x = factor(hours_worked), # converts to factor for categorical x-axis
+             y = mean_sleep)) + # y-axis shows group mean sleep
+  geom_hline( # add dashed horizontal line showing overall mean sleep
+    yintercept = overall_mean_sleep, # sets line at overall mean
+    linetype = "dashed", # sets line type to dashed
+    linewidth = 0.8) + # sets line width
+  geom_segment( # adds vertical lollipop stems from 400 up to group mean
+    aes(xend = factor(hours_worked), # keeps same x-position as point
+        y = 400, # line starts at 400 min
+        yend = mean_sleep), # line ends at mean for the group
+    linewidth = 1.1) + # sets line width
+  geom_point(size = 4) + # sets size of points (at mean for group)
+  geom_text(
+    aes(label = paste0("n=", n_days)), # labels each point would # obs in group
+    vjust = -1.2, # positions label
+    size = 3.3) + # sets size of label
+  geom_label(data = highlight_work, #adds label highlighting highest mean
+    aes(x = as.numeric(factor(hours_worked)), # sets x-axis position
+      y = mean_sleep + 15, # sets y-axis position
+      # writes label text
+      label = paste0("Highest average sleep\n(", hours_worked, " hrs)")), 
+    size = 3.3, # sets text size
+    label.size = 0.2, # sets border sizze
+    inherit.aes = FALSE) + # prevents inheriting global aesthetics
+  labs(
+    title = "Average Sleep Duration by Hours Worked", # sets title
+    subtitle = "Group means; labels show number of days per group", # sets subtitle
+    x = "Hours worked", # sets x-axis title
+    y = "Mean time slept (minutes)") + # sets y-axis title
+  base_theme # uses base theme
+
+p5_lollipop # shows plot 5
+# saves plot 5 with specifications
+ggsave("plot5_lollipop_hours_worked.png", p5_lollipop, width = 7.5, height = 5, dpi = 300)
+```
 

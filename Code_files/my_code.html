@@ -87,6 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#plot-2-scatter-bins-sleep-duration-vs-efficiency" id="toc-plot-2-scatter-bins-sleep-duration-vs-efficiency" class="nav-link" data-scroll-target="#plot-2-scatter-bins-sleep-duration-vs-efficiency">Plot 2: Scatter + Bins (Sleep duration vs efficiency)</a></li>
   <li><a href="#plot-3-calendar-style-heatmap-daily-sleep-over-time" id="toc-plot-3-calendar-style-heatmap-daily-sleep-over-time" class="nav-link" data-scroll-target="#plot-3-calendar-style-heatmap-daily-sleep-over-time">Plot 3: Calendar-style heatmap (Daily sleep over time)</a></li>
   <li><a href="#plot-4-bubble-scatter-steps-vs-sleep-duration-size-sleep-efficiency-color-time-stressed" id="toc-plot-4-bubble-scatter-steps-vs-sleep-duration-size-sleep-efficiency-color-time-stressed" class="nav-link" data-scroll-target="#plot-4-bubble-scatter-steps-vs-sleep-duration-size-sleep-efficiency-color-time-stressed">Plot 4: Bubble scatter (Steps vs sleep duration; size = sleep efficiency, color = time stressed)</a></li>
+  <li><a href="#plot-5-lollipop-chart-mean-sleep-by-hours-worked" id="toc-plot-5-lollipop-chart-mean-sleep-by-hours-worked" class="nav-link" data-scroll-target="#plot-5-lollipop-chart-mean-sleep-by-hours-worked">Plot 5: Lollipop chart (Mean sleep by hours worked)</a></li>
   </ul>
 </nav>
 </div>
@@ -261,11 +262,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add curved arrow annotation highlighting highest median day</span></span>
 <span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_curve</span>(</span>
 <span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="cn">NULL</span>, <span class="co"># uses plot-level data</span></span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> highlight_day , <span class="co"># sets arrow starting x-position (weekday)</span></span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow starting y-position (weekday)</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> highlight_day , <span class="co"># sets arrow starting x-position </span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow starting y-position </span></span>
 <span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="fu">max</span>(cleaned_data<span class="sc">$</span>time_slept_minutes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="fl">1.01</span>, </span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>        <span class="at">xend =</span> highlight_day , <span class="co"># sets arrow ending x-position (weekday)</span></span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow ending y-position (weekday)</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>        <span class="at">xend =</span> highlight_day , <span class="co"># sets arrow ending x-position </span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow ending y-position </span></span>
 <span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>        <span class="at">yend =</span> med_by_day<span class="sc">$</span>med_sleep[med_by_day<span class="sc">$</span>day_of_week <span class="sc">==</span> highlight_day] <span class="sc">*</span> <span class="fl">1.05</span>),</span>
 <span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.35</span>, <span class="co"># sets degree of curve</span></span>
 <span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"inches"</span>)), <span class="co"># sets arrowhead size</span></span>
@@ -394,7 +395,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Steps vs Sleep (Sized by Time Stressed)"</span>, <span class="co"># sets title</span></span>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Steps"</span>, <span class="co"># sets x-axis title</span></span>
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Time stressed (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  base_theme</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="co"># uses base theme</span></span>
 <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>p4_bubble <span class="co"># shows plot 4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -406,6 +407,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># saves plot 4 with specifications</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"plot4_steps_stress_efficiency.png"</span>, p4_bubble, <span class="at">width =</span> <span class="fl">7.5</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plot-5-lollipop-chart-mean-sleep-by-hours-worked" class="level1">
+<h1>Plot 5: Lollipop chart (Mean sleep by hours worked)</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary by hours worked </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cleaned_data_work_summary <span class="ot">&lt;-</span> cleaned_data <span class="sc">|&gt;</span> <span class="co"># uses cleaned data</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(hours_worked) <span class="sc">|&gt;</span> <span class="co"># groups observations by hours worked</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_sleep =</span> <span class="fu">mean</span>(time_slept_minutes), <span class="co"># compute mean sleep per group</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_days =</span> <span class="fu">n</span>(), <span class="co"># counts number of days in each group</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="co"># ungroups df</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>overall_mean_sleep <span class="ot">&lt;-</span> <span class="fu">mean</span>(cleaned_data<span class="sc">$</span>time_slept_minutes) <span class="co"># finds overall mean</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>highlight_work <span class="ot">&lt;-</span> cleaned_data_work_summary <span class="sc">|&gt;</span> <span class="co"># uses summary by hours worked</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(mean_sleep, <span class="at">n =</span> <span class="dv">1</span>)  <span class="co"># selects row with highest mean_sleep</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>p5_lollipop <span class="ot">&lt;-</span> </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(cleaned_data_work_summary, <span class="co"># uses summary by hours worked</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>         <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(hours_worked), <span class="co"># converts to factor for categorical x-axis</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> mean_sleep)) <span class="sc">+</span> <span class="co"># y-axis shows group mean sleep</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>( <span class="co"># add dashed horizontal line showing overall mean sleep</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">yintercept =</span> overall_mean_sleep, <span class="co"># sets line at overall mean</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="co"># sets line type to dashed</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span> <span class="co"># sets line width</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>( <span class="co"># adds vertical lollipop stems from 400 up to group mean</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xend =</span> <span class="fu">factor</span>(hours_worked), <span class="co"># keeps same x-position as point</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="dv">400</span>, <span class="co"># line starts at 400 min</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">yend =</span> mean_sleep), <span class="co"># line ends at mean for the group</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span> <span class="co"># sets line width</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span> <span class="co"># sets size of points (at mean for group)</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"n="</span>, n_days)), <span class="co"># labels each point would # obs in group</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">1.2</span>, <span class="co"># positions label</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.3</span>) <span class="sc">+</span> <span class="co"># sets size of label</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(<span class="at">data =</span> highlight_work, <span class="co">#adds label highlighting highest mean</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(<span class="fu">factor</span>(hours_worked)), <span class="co"># sets x-axis position</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> mean_sleep <span class="sc">+</span> <span class="dv">15</span>, <span class="co"># sets y-axis position</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>      <span class="co"># writes label text</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Highest average sleep</span><span class="sc">\n</span><span class="st">("</span>, hours_worked, <span class="st">" hrs)"</span>)), </span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.3</span>, <span class="co"># sets text size</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">label.size =</span> <span class="fl">0.2</span>, <span class="co"># sets border sizze</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co"># prevents inheriting global aesthetics</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Sleep Duration by Hours Worked"</span>, <span class="co"># sets title</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Group means; labels show number of days per group"</span>, <span class="co"># sets subtitle</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Hours worked"</span>, <span class="co"># sets x-axis title</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Mean time slept (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="co"># uses base theme</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>p5_lollipop <span class="co"># shows plot 5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="my_code_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># saves plot 5 with specifications</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"plot5_lollipop_hours_worked.png"</span>, p5_lollipop, <span class="at">width =</span> <span class="fl">7.5</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
