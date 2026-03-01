@@ -245,3 +245,33 @@ p3_calendar # shows plot 3
 # saves plot 3 with specifications
 ggsave("plot3_calendar_heatmap.png", p3_calendar, width = 10, height = 4.8, dpi = 300)
 ```
+
+# Plot 4: Bubble scatter (Steps vs sleep duration; size = sleep efficiency, color = time stressed)
+```{r}
+p4_bubble <- 
+  ggplot(cleaned_data, # uses cleaned data
+         aes(x = number_of_steps, # x-axis is # of steps
+             y = time_slept_minutes)) + # y-axis is response (sleep duration)
+  geom_point(aes(size = sleep_efficiency, # point size determined by sleep efficiency
+                 color = time_stressed_min), # points colored by time stressed
+             alpha = 0.5) + # makes point semi-transparent
+  scale_x_continuous(labels = comma) + # formats x-axis with commas
+  scale_color_gradient(low = "#FEE5D9",  # sets low stress days to light red 
+                       high = "#A50F15", # sets high stress days to dark red
+                       name = "Time Stressed (min)") + # names color legend
+  scale_size_continuous(name = "Sleep Efficiency", # names size legend
+    labels = percent_format(accuracy = 1), # formats efficiency as percentage
+    limits = range(cleaned_data$sleep_efficiency), # use actual data range for limits
+    range = c(1,7)) + # sets range for point sizes
+  labs(title = "Steps vs Sleep (Sized by Time Stressed)", # sets title
+       x = "Steps", # sets x-axis title
+       y = "Time stressed (minutes)") + # sets y-axis title
+  base_theme
+
+p4_bubble # shows plot 4
+# saves plot 4 with specifications
+ggsave("plot4_steps_stress_efficiency.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
+```
+
+
+
