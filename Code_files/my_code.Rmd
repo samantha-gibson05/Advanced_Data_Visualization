@@ -28,7 +28,7 @@ library(ggplot2) # loads in ggplot2 package
 library(fontawesome) # loads in fontawesome package
 
 # Stores my personal data as an object called my_data
-raw_data <- read.csv(here('data',"193DS data - stress (4).csv")) 
+raw_data <- read.csv(here('data',"193DS data - stress (5).csv")) 
 ```
 **Cleaning data**
 ```{r}
