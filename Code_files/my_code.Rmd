@@ -25,6 +25,7 @@ library(showtext) # loads in showtext package
 library(sysfonts) # loads in sysfonts package
 library(ggtext) # loads in ggtext package
 library(ggplot2) # loads in ggplot2 package
+library(viridis) # loads in viridis package
 library(fontawesome) # loads in fontawesome package
 
 # Stores my personal data as an object called my_data
@@ -76,20 +77,32 @@ font_add_google("Space Grotesk", "space")
 showtext_auto()
 
 # Create a reusable base theme for all plots
-base_theme <- theme_minimal(base_family = "dm") +
+base_theme <- theme_minimal(base_family = "space") +
   theme(
     # Main title styling 
-    plot.title = (element_text(face = "bold", size = 16)),
+    plot.title = (element_text(face = "bold", size = 18)),
     # Subtitle styling
-    plot.subtitle = element_text(size = 11),
+    plot.subtitle = element_text(size = 11, margin = margin(b = 8)),
+    # Caption styling
+    plot.caption = element_text(size = 9, color = "gray30"),
     # Axis title styling
     axis.title = element_text(size = 11),
     # Axis tick label styling
-    axis.text = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "gray20"),
     # Legend title styling
     legend.title = element_text(size = 10),
     # Legend text styling
-    legend.text = element_text(size = 9))
+    legend.text = element_text(size = 9),
+    # Legend position
+    legend.position = "bottom",
+    # Legend direction
+    legend.direction = "horizontal",
+    # Removes minor grid lines
+    panel.grid.minor = element_blank(),
+    # Keeps subtle major grid lines
+    panel.grid.major = element_line(linewidth = 0.25, color = "gray92"),
+    # Adds margin around the edges of the plot
+    plot.margin = margin(10, 12, 10, 12))
 ```
 
 # Plot 1: Boxplot + jitter (Sleep by day of week)
@@ -178,8 +191,9 @@ p1_box <-
             # creates content of label
             label = paste0("Highest median: ", round(highlight_median, 0), " min"), 
             vjust = 0, # sets vertical alignment
-            size = 3.5, # sets text size of label
-            family = "dm") # sets font family of label
+            size = 3.4, # sets text size of label
+            color = "gray20", # colors text
+            family = "space") # sets font family of label
 
 p1_box # shows plot 1
 
@@ -193,14 +207,12 @@ p2_sleep_scatter <-
   ggplot(cleaned_data, # uses cleaned data
          aes(x = sleep_efficiency, # x-axis is continuous predictor (weekday)
              y = time_slept_minutes)) + # y-axis is response (sleep duration)
-  geom_bin2d(bins = 9) +   # Create rectangular bins instead of individual points 
-  scale_fill_gradient( # Define the color gradient for bin counts
-    name = "Number of days", # sets legend title
-    low = "green", # color for bins with fewer observations
-    high = "darkblue") + # color for bins with more observations
+  geom_bin2d(bins = 10) +   # Create rectangular bins instead of individual points 
+  scale_fill_viridis_c(name = "Number of days", # creates legend title 
+                       option = "C") + # colors by cohesive color-scheme
   labs(
-    title = "Sleep Duration vs Efficiency Scatter with Bins", # sets plot title
-    x = "Sleep Efficiency (range 0-1)", # sets x-axis title
+    title = "Sleep Duration vs Efficiency", # sets plot title
+    x = "Sleep Efficiency (0-1)", # sets x-axis title
     y = "Time slept (minutes)") + # sets y-axis title
   base_theme # uses preset base theme
 
@@ -261,22 +273,22 @@ p3_calendar <-
   geom_tile( # Draw rectangular tiles for each date (in LOW range)
     data = cleaned_data_cal # uses cleaned data
       |> filter(low_sleep_flag == "Extreme low sleep"), # filters to outliers
-    fill = 'purple', # colors outliers purple
+    fill = 'cyan', # colors outliers green
     color = "white", # makes white borders between tiles
     width = 6.5, # sets tile width
     height = 0.95, # sets tile height
     linewidth = 0.6) + # sets thickness of tile borders
   scale_x_date(date_labels = "%b %d") + # display axis format like "Jan 09"
-  scale_fill_gradient( # Define color gradient for sleep duration
+  scale_fill_viridis_c( # Define color gradient for sleep duration
     name = "Sleep Duration (min)", # sets legend title
-    low = "red", # sets color for low sleep duration days
-    high = "green", # sets color for high sleep duration days 
-    limits = c(sleep_range$min_sleep, sleep_range$max_sleep)) + # limits range
+    option = "C", # colors by cohesive color-scheme
+    limits = c(sleep_range$min_sleep, # sets upper limit for scale
+               sleep_range$max_sleep)) + # sets lower limit for scale
   # flips axis so Monday appears at top of heatmap
   scale_y_discrete(limits = rev(levels(cleaned_data_cal$weekday))) +
   labs(
-    title = "Sleep Calendar (Daily Heatmap)", # sets title
-    caption = "Purple tile = outlier low-sleep day (excluded from color-scale)",
+    title = "Sleep Calendar", # sets title
+    caption = "Green tile = outlier low-sleep day (excluded from color-scale)",
     x = "Week (starting Monday)", # sets x-axis title
     y = "") + # no title for y-axis
   base_theme + # uses preset base theme
@@ -318,15 +330,13 @@ p4_bubble <-
   geom_point( # creates outlier point excluded from color-scale
     data = cleaned_data_bubble # uses altered data for bubble plot
       |> filter(sleep_outlier_flag), # selects only outlier
-    color = "blue", # colors outlier blue
+    color = "cyan", # colors outlier blue
     size = 3) + # sets size to 3
   scale_x_continuous(labels = comma) + # formats x-axis with commas
-  scale_color_gradient( # scales color by time stressed
-    low = "#FEE5D9", # sets lowest stress color
-    high = "#A50F15", # sets highest stress color
-    name = "Time Stressed (min)", # names legend
-    limits = c(stress_limits$min_stress, # sets lower limit for color scale
-               stress_limits$max_stress)) + # sets upper limit for color scale
+  scale_color_viridis_c(
+    name = "Time stressed (min)",
+    option = "C",
+    limits = c(stress_limits$min_stress, stress_limits$max_stress)) +
   labs(title = "Steps vs Sleep (Colored by Time Stressed)", # sets title
     caption = "Blue point = low-sleep outlier", # creates caption
     x = "Steps", # sets x-axis title
@@ -337,7 +347,7 @@ p4_bubble # shows plot 4
 # saves plot 4 with specifications
 ggsave("plot4_steps_stress_sleep.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
 ```
-
+ xxxx custom different palletxxx
 
 # Plot 5: Lollipop chart (Mean sleep by hours worked)
 ```{r}
@@ -363,24 +373,26 @@ p5_lollipop <-
     linewidth = 0.8) + # sets line width
   geom_segment( # adds vertical lollipop stems from 400 up to group mean
     aes(xend = factor(hours_worked), # keeps same x-position as point
-        y = 400, # line starts at 400 min
+        y = 0, # line starts at 0 min
         yend = mean_sleep), # line ends at mean for the group
     linewidth = 1.1) + # sets line width
   geom_point(size = 4) + # sets size of points (at mean for group)
   geom_text(
-    aes(label = paste0("n=", n_days)), # labels each point would # obs in group
+    aes(label = paste0("n=", n_days)),  # labels each point with # obs in group
     vjust = -1.2, # positions label
-    size = 3.3) + # sets size of label
+    size = 3.2, # sets size of label
+    family = "space")+ # sets font family
   geom_label(data = highlight_work, #adds label highlighting highest mean
     aes(x = as.numeric(factor(hours_worked)), # sets x-axis position
       y = mean_sleep + 15, # sets y-axis position
       # writes label text
-      label = paste0("Highest average sleep\n(", hours_worked, " hrs)")), 
-    size = 3.3, # sets text size
-    label.size = 0.2, # sets border sizze
+      label = paste0("Highest average sleep\n ( worked ", hours_worked, " hrs)")), 
+    size = 3.2, # sets text size
+    family = 'space',
+    label.size = 0.2, # sets border size
     inherit.aes = FALSE) + # prevents inheriting global aesthetics
   labs(
-    title = "Average Sleep Duration by Hours Worked", # sets title
+    title = "Average Sleep by Hours Worked", # sets title
     subtitle = "Group means; labels show number of days per group", # sets subtitle
     x = "Hours worked", # sets x-axis title
     y = "Mean time slept (minutes)") + # sets y-axis title
