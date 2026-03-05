@@ -123,6 +123,12 @@ highlight_day <- med_by_day |>
   pull(day_of_week) |> # extract just the weekday value
   as.character() # convert to character
 
+# Store the numeric value of the highest median for annotation text
+highlight_median <- med_by_day |>
+  filter(day_of_week == highlight_day) |> # selects row with the highest median
+  pull(med_sleep) # returns the med_sleep column as a numeric vector
+
+
 # Build the boxplot visualization
 p1_box <- 
   ggplot(
@@ -144,7 +150,8 @@ p1_box <-
     height = 0, # no vertical jitter
     alpha = 0.6, # sets transparency level
     size = 2) + # sets point size
-  scale_fill_manual(values = week_colors) + # Apply manual fill color scale
+  scale_fill_manual(values = week_colors, # Apply manual fill color scale
+                    guide = 'none') + # removes legend
   scale_color_manual(values = week_colors, # Apply manual fill color scale
                      guide = "none") + # remove duplicate legend
   labs(
@@ -152,7 +159,6 @@ p1_box <-
     x = "Day of week", # sets x-axis title
     y = "Time Slept (minutes)") + # sets y-axis title
   base_theme + # uses preset base theme
-  theme(axis.text.x = element_text(angle = 35, hjust = 1)) + # Rotate x-axis labels 
   # Add curved arrow annotation highlighting highest median day
   geom_curve(
     data = NULL, # uses plot-level data
@@ -170,7 +176,7 @@ p1_box <-
             # sets vertical position of label
             y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.03,
             # creates content of label
-            label = paste0("Highest median: ", highlight_day), 
+            label = paste0("Highest median: ", round(highlight_median, 0), " min"), 
             vjust = 0, # sets vertical alignment
             size = 3.5, # sets text size of label
             family = "dm") # sets font family of label
@@ -219,21 +225,58 @@ cleaned_data_cal <- cleaned_data |>
     # Create a week index variable
     week = floor_date(date, unit = "week", week_start = 1))
 
+
+
+# Identify the unusually low-sleep Monday
+low_sleep_day <- cleaned_data_cal |> # uses altered calender plot data
+  filter(time_slept_minutes == min(time_slept_minutes)) # selects outlier
+
+
+
+# Create a variable flagging that extreme low day
+cleaned_data_cal <- cleaned_data_cal |> # uses altered calender plot data
+  mutate(low_sleep_flag = if_else(
+      time_slept_minutes == min(time_slept_minutes),  # detects lowest sleep day
+      "Extreme low sleep","Normal range")) # identifies sleep range as normal or low
+
+# Compute gradient limits excluding the extreme day
+sleep_range <- cleaned_data_cal |> # uses altered calender plot data
+  filter(low_sleep_flag=="Normal range") |> # filters to 'normal' sleep durations
+  summarise(
+    min_sleep = min(time_slept_minutes), # sets min bound of range
+    max_sleep = max(time_slept_minutes)) # sets max bound of range
+
 p3_calendar <- 
-  ggplot(cleaned_data_cal, # uses cleaned data with added variables
+  ggplot(cleaned_data_cal, # uses altered calender plot data
          aes(x = week, # column position = week grouping
-             y = weekday, # row position = day of week
-             fill = time_slept_minutes)) + # tile color hue by sleep duration
-  geom_tile( # Draw rectangular tiles for each date
+             y = weekday)) + # row position = day of week
+  geom_tile( # Draw rectangular tiles for each date (in NORMAL range)
+    data = cleaned_data_cal # uses cleaned data
+      |> filter(low_sleep_flag == "Normal range"), # filter to normal sleep range
+    aes(fill = time_slept_minutes), # fills color by time slept
     color = "white", # makes white borders between tiles
+    width = 6.5, # sets tile width
+    height = 0.95, # sets tile height
+    linewidth = 0.6) + # sets thickness of tile borders
+  geom_tile( # Draw rectangular tiles for each date (in LOW range)
+    data = cleaned_data_cal # uses cleaned data
+      |> filter(low_sleep_flag == "Extreme low sleep"), # filters to outliers
+    fill = 'purple', # colors outliers purple
+    color = "white", # makes white borders between tiles
+    width = 6.5, # sets tile width
+    height = 0.95, # sets tile height
     linewidth = 0.6) + # sets thickness of tile borders
   scale_x_date(date_labels = "%b %d") + # display axis format like "Jan 09"
   scale_fill_gradient( # Define color gradient for sleep duration
     name = "Sleep Duration (min)", # sets legend title
     low = "red", # sets color for low sleep duration days
-    high = "green") + # sets color for high sleep duration days
+    high = "green", # sets color for high sleep duration days 
+    limits = c(sleep_range$min_sleep, sleep_range$max_sleep)) + # limits range
+  # flips axis so Monday appears at top of heatmap
+  scale_y_discrete(limits = rev(levels(cleaned_data_cal$weekday))) +
   labs(
     title = "Sleep Calendar (Daily Heatmap)", # sets title
+    caption = "Purple tile = outlier low-sleep day (excluded from color-scale)",
     x = "Week (starting Monday)", # sets x-axis title
     y = "") + # no title for y-axis
   base_theme + # uses preset base theme
@@ -246,31 +289,53 @@ p3_calendar # shows plot 3
 ggsave("plot3_calendar_heatmap.png", p3_calendar, width = 10, height = 4.8, dpi = 300)
 ```
 
-# Plot 4: Bubble scatter (Steps vs sleep duration; size = sleep efficiency, color = time stressed)
+# Plot 4: Bubble scatter (Steps vs sleep duration; color = time stressed)
+
 ```{r}
-p4_bubble <- 
-  ggplot(cleaned_data, # uses cleaned data
+# Identify sleep outlier value (low sleep day)
+sleep_outlier <- min(cleaned_data$time_slept_minutes, na.rm = TRUE)
+
+# Flag outlier day
+cleaned_data_bubble <- cleaned_data |> # uses cleaned data
+  mutate(sleep_outlier_flag = time_slept_minutes ==sleep_outlier) # flags outlier
+
+# Compute color scale limits excluding the outlier day
+stress_limits <- cleaned_data_bubble |> # uses altered data for bubble plot
+  filter(!sleep_outlier_flag) |> # filters to non-outlier data
+  summarise(
+    min_stress = min(time_stressed_min, na.rm = TRUE), # sets min border
+    max_stress = max(time_stressed_min, na.rm = TRUE)) # sets max border
+
+p4_bubble <-
+  ggplot(cleaned_data_bubble, # uses altered data for bubble plot
          aes(x = number_of_steps, # x-axis is # of steps
              y = time_slept_minutes)) + # y-axis is response (sleep duration)
-  geom_point(aes(size = sleep_efficiency, # point size determined by sleep efficiency
-                 color = time_stressed_min), # points colored by time stressed
-             alpha = 0.5) + # makes point semi-transparent
+  geom_point( # creates non-outlier points
+    data = cleaned_data_bubble # uses altered data for bubble plot
+      |> filter(!sleep_outlier_flag), # selects only non-outliers
+    aes(color = time_stressed_min), # colors by time stressed
+    size = 3) + # sets size to 3
+  geom_point( # creates outlier point excluded from color-scale
+    data = cleaned_data_bubble # uses altered data for bubble plot
+      |> filter(sleep_outlier_flag), # selects only outlier
+    color = "blue", # colors outlier blue
+    size = 3) + # sets size to 3
   scale_x_continuous(labels = comma) + # formats x-axis with commas
-  scale_color_gradient(low = "#FEE5D9",  # sets low stress days to light red 
-                       high = "#A50F15", # sets high stress days to dark red
-                       name = "Time Stressed (min)") + # names color legend
-  scale_size_continuous(name = "Sleep Efficiency", # names size legend
-    labels = percent_format(accuracy = 1), # formats efficiency as percentage
-    limits = range(cleaned_data$sleep_efficiency), # use actual data range for limits
-    range = c(1,7)) + # sets range for point sizes
-  labs(title = "Steps vs Sleep (Sized by Time Stressed)", # sets title
-       x = "Steps", # sets x-axis title
-       y = "Time stressed (minutes)") + # sets y-axis title
+  scale_color_gradient( # scales color by time stressed
+    low = "#FEE5D9", # sets lowest stress color
+    high = "#A50F15", # sets highest stress color
+    name = "Time Stressed (min)", # names legend
+    limits = c(stress_limits$min_stress, # sets lower limit for color scale
+               stress_limits$max_stress)) + # sets upper limit for color scale
+  labs(title = "Steps vs Sleep (Colored by Time Stressed)", # sets title
+    caption = "Blue point = low-sleep outlier", # creates caption
+    x = "Steps", # sets x-axis title
+    y = "Time stressed (minutes)") + # sets y-axis title
   base_theme # uses base theme
 
 p4_bubble # shows plot 4
 # saves plot 4 with specifications
-ggsave("plot4_steps_stress_efficiency.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
+ggsave("plot4_steps_stress_sleep.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
 ```
 
 
