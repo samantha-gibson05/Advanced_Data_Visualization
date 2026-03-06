@@ -29,7 +29,7 @@ library(viridis) # loads in viridis package
 library(fontawesome) # loads in fontawesome package
 
 # Stores my personal data as an object called my_data
-raw_data <- read.csv(here('data',"193DS data - stress (5).csv")) 
+raw_data <- read.csv(here('data',"193DS data - stress (6).csv")) 
 ```
 **Cleaning data**
 ```{r}
@@ -76,18 +76,26 @@ font_add_google("Space Grotesk", "space")
 # Activate showtext so ggplot can render fonts
 showtext_auto()
 
-# Creates custom gradient palette (used for stress, bins, heatmaps)
+# Creates custom gradient palettes
+week_colors <- c(
+  Monday    = "#1F77B4",  # strong blue
+  Tuesday   = "#3B8BC2",  # lighter blue
+  Wednesday = "#2A9D8F",  # teal
+  Thursday  = "#4FB6C4",  # aqua
+  Friday    = "#6C8CD5",  # periwinkle
+  Saturday  = "#7B6FB6",  # indigo
+  Sunday    = "#9C89B8")   # lavender
+  
 palette_gradient <- c(
   "#A6CEE3",  # light blue
   "#1F78B4",  # medium blue
-  "#08306B"   # deep blue
-)
+  "#08306B")   # deep blue
+
 palette_gradientA <- c(
   "#F7F7F7",  # very light
   "#A6CEE3",  # light blue
   "#1F78B4",  # medium blue
-  "#08306B"   # deep blue
-)
+  "#08306B")   # deep blue
 # Create a reusable base theme for all plots
 base_theme <- theme_minimal(base_family = "space") +
   theme(
@@ -124,16 +132,6 @@ base_theme <- theme_minimal(base_family = "space") +
 overall_median_sleep <- median(
   cleaned_data$time_slept_minutes, # numeric vector of sleep minutes
   na.rm = TRUE) # ignore missing values
-
-# Define a custom color palette for each day of the week
-week_colors <- c(
-  "Monday" = "darkgoldenrod1",
-  "Tuesday" = "mediumvioletred",
-  "Wednesday" = "darkolivegreen",
-  "Thursday" = "cyan4",
-  "Friday" = "indianred",
-  "Saturday" = "darkorange2",
-  "Sunday" = "lightblue")
 
 # Compute median sleep for each day of the week
 med_by_day <- cleaned_data |> # uses cleaned data
@@ -286,7 +284,7 @@ p3_calendar <-
   geom_tile( # Draw rectangular tiles for each date (in LOW range)
     data = cleaned_data_cal # uses cleaned data
       |> filter(low_sleep_flag == "Extreme low sleep"), # filters to outliers
-    fill = 'green3', # colors outliers green
+    fill = '#98a869', # colors outliers green
     color = "white", # makes white borders between tiles
     width = 6.5, # sets tile width
     height = 0.95, # sets tile height
@@ -343,7 +341,7 @@ p4_bubble <-
   geom_point( # creates outlier point excluded from color-scale
     data = cleaned_data_bubble # uses altered data for bubble plot
       |> filter(sleep_outlier_flag), # selects only outlier
-    color = "green3", # colors outlier blue
+    color = "#98a869", # colors outlier blue
     size = 3) + # sets size to 3
   scale_x_continuous(labels = comma) + # formats x-axis with commas
   scale_color_gradientn(
