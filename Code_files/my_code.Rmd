@@ -76,6 +76,18 @@ font_add_google("Space Grotesk", "space")
 # Activate showtext so ggplot can render fonts
 showtext_auto()
 
+# Creates custom gradient palette (used for stress, bins, heatmaps)
+palette_gradient <- c(
+  "#A6CEE3",  # light blue
+  "#1F78B4",  # medium blue
+  "#08306B"   # deep blue
+)
+palette_gradientA <- c(
+  "#F7F7F7",  # very light
+  "#A6CEE3",  # light blue
+  "#1F78B4",  # medium blue
+  "#08306B"   # deep blue
+)
 # Create a reusable base theme for all plots
 base_theme <- theme_minimal(base_family = "space") +
   theme(
@@ -208,8 +220,9 @@ p2_sleep_scatter <-
          aes(x = sleep_efficiency, # x-axis is continuous predictor (weekday)
              y = time_slept_minutes)) + # y-axis is response (sleep duration)
   geom_bin2d(bins = 10) +   # Create rectangular bins instead of individual points 
-  scale_fill_viridis_c(name = "Number of days", # creates legend title 
-                       option = "C") + # colors by cohesive color-scheme
+  scale_fill_gradientn(
+    colours = palette_gradient,
+    name = "Number of days")+ # creates legend title 
   labs(
     title = "Sleep Duration vs Efficiency", # sets plot title
     x = "Sleep Efficiency (0-1)", # sets x-axis title
@@ -273,15 +286,15 @@ p3_calendar <-
   geom_tile( # Draw rectangular tiles for each date (in LOW range)
     data = cleaned_data_cal # uses cleaned data
       |> filter(low_sleep_flag == "Extreme low sleep"), # filters to outliers
-    fill = 'cyan', # colors outliers green
+    fill = 'green3', # colors outliers green
     color = "white", # makes white borders between tiles
     width = 6.5, # sets tile width
     height = 0.95, # sets tile height
     linewidth = 0.6) + # sets thickness of tile borders
   scale_x_date(date_labels = "%b %d") + # display axis format like "Jan 09"
-  scale_fill_viridis_c( # Define color gradient for sleep duration
+  scale_fill_gradientn(
+    colors = palette_gradientA, # Define color gradient for sleep duration
     name = "Sleep Duration (min)", # sets legend title
-    option = "C", # colors by cohesive color-scheme
     limits = c(sleep_range$min_sleep, # sets upper limit for scale
                sleep_range$max_sleep)) + # sets lower limit for scale
   # flips axis so Monday appears at top of heatmap
@@ -330,15 +343,16 @@ p4_bubble <-
   geom_point( # creates outlier point excluded from color-scale
     data = cleaned_data_bubble # uses altered data for bubble plot
       |> filter(sleep_outlier_flag), # selects only outlier
-    color = "cyan", # colors outlier blue
+    color = "green3", # colors outlier blue
     size = 3) + # sets size to 3
   scale_x_continuous(labels = comma) + # formats x-axis with commas
-  scale_color_viridis_c(
-    name = "Time stressed (min)",
-    option = "C",
-    limits = c(stress_limits$min_stress, stress_limits$max_stress)) +
+  scale_color_gradientn(
+    colors = palette_gradientA, # custom gradient colors
+    name = "Time stressed (min)", # legend title
+    limits = c(stress_limits$min_stress, # sets min limit 
+               stress_limits$max_stress)) + # sets max limit 
   labs(title = "Steps vs Sleep (Colored by Time Stressed)", # sets title
-    caption = "Blue point = low-sleep outlier", # creates caption
+    caption = "Green point = low-sleep outlier", # creates caption
     x = "Steps", # sets x-axis title
     y = "Time stressed (minutes)") + # sets y-axis title
   base_theme # uses base theme
@@ -347,7 +361,6 @@ p4_bubble # shows plot 4
 # saves plot 4 with specifications
 ggsave("plot4_steps_stress_sleep.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
 ```
- xxxx custom different palletxxx
 
 # Plot 5: Lollipop chart (Mean sleep by hours worked)
 ```{r}
