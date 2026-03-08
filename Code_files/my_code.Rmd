@@ -1,7 +1,7 @@
 ---
 title: "Advanced Data Visualization"
 author: "Sami Gibson"
-date: "2026-02-27"
+date: "2026-02-08"
 format:
   html:
     toc: true # use this to display a table of contents
@@ -25,8 +25,8 @@ library(showtext) # loads in showtext package
 library(sysfonts) # loads in sysfonts package
 library(ggtext) # loads in ggtext package
 library(ggplot2) # loads in ggplot2 package
-library(viridis) # loads in viridis package
 library(fontawesome) # loads in fontawesome package
+library(grid) # loads in grid package
 
 # Stores my personal data as an object called my_data
 raw_data <- read.csv(here('data',"193DS data - stress (6).csv")) 
@@ -78,13 +78,14 @@ showtext_auto()
 
 # Creates custom gradient palettes
 week_colors <- c(
-  Monday    = "#1F77B4",  # strong blue
-  Tuesday   = "#3B8BC2",  # lighter blue
-  Wednesday = "#2A9D8F",  # teal
-  Thursday  = "#4FB6C4",  # aqua
-  Friday    = "#6C8CD5",  # periwinkle
-  Saturday  = "#7B6FB6",  # indigo
-  Sunday    = "#9C89B8")   # lavender
+  Monday    = "#2F6DA3",
+  Tuesday   = "#3F82B8",
+  Wednesday = "#2D9C8F",
+  Thursday  = "#53B7C5",
+  Friday    = "#6F8FD8",
+  Saturday  = "#7C72B6",
+  Sunday    = "#9C8AB9"
+)
   
 palette_gradient <- c(
   "#A6CEE3",  # light blue
@@ -96,33 +97,62 @@ palette_gradientA <- c(
   "#A6CEE3",  # light blue
   "#1F78B4",  # medium blue
   "#08306B")   # deep blue
+
+outlier_green <- "#8A9B52"
+
+# Shared labels
+plot_title_family <- "playfair"
+body_family <- "space"
+
 # Create a reusable base theme for all plots
-base_theme <- theme_minimal(base_family = "space") +
+base_theme <- theme_minimal(base_family = body_family) +
   theme(
     # Main title styling 
-    plot.title = (element_text(face = "bold", size = 18)),
+    plot.title = element_text(family = plot_title_family,
+                              face = "bold",
+                              size = 22,
+                              color = "black",
+                              margin = margin(b = 6)),
     # Subtitle styling
-    plot.subtitle = element_text(size = 11, margin = margin(b = 8)),
+    plot.subtitle = element_text(size = 11,
+                                 color = "gray25",
+                                 margin = margin(b = 10)),
     # Caption styling
-    plot.caption = element_text(size = 9, color = "gray30"),
+    plot.caption = element_text(size = 10,
+                                color = "gray30",
+                                hjust = 0,
+                                margin = margin(t = 10)),
     # Axis title styling
-    axis.title = element_text(size = 11),
+    axis.title = element_text(size = 12,
+                              color = "black"),
     # Axis tick label styling
-    axis.text = element_text(size = 10, color = "gray20"),
+    axis.text = element_text(size = 10.5,
+                                         color = "gray20"),
     # Legend title styling
-    legend.title = element_text(size = 10),
+    legend.title = element_text(size = 11,
+                                color = "black"),
     # Legend text styling
-    legend.text = element_text(size = 9),
+    legend.text = element_text(size = 10,
+                               color = "gray20"),
     # Legend position
     legend.position = "bottom",
     # Legend direction
     legend.direction = "horizontal",
+    # legend alignment
+    legend.box = "horizontal",
     # Removes minor grid lines
     panel.grid.minor = element_blank(),
     # Keeps subtle major grid lines
-    panel.grid.major = element_line(linewidth = 0.25, color = "gray92"),
+    panel.grid.major = element_line(linewidth = 0.25, 
+                                    color = "gray82"),
     # Adds margin around the edges of the plot
-    plot.margin = margin(10, 12, 10, 12))
+    plot.margin = margin(12, 14, 12, 14))
+    
+    # Creates consistent color bar legends
+bottom_colorbar <- guide_colorbar(title.position = "top", # sets position
+                                  title.hjust = 0.5,
+                                  barwidth = unit(7, "cm"),
+                                  barheight = unit(0.6, "cm"))
 ```
 
 # Plot 1: Boxplot + jitter (Sleep by day of week)
@@ -154,25 +184,27 @@ highlight_median <- med_by_day |>
 
 # Build the boxplot visualization
 p1_box <- 
-  ggplot(
+  ggplot( # base layer
     cleaned_data, # uses cleaned data
     aes(x = day_of_week, # x axis is categorical predictor (weekday)
         y = time_slept_minutes)) + # y axis is response variable (sleep duration)
   geom_hline( # Add horizontal line at overall median sleep
     yintercept = overall_median_sleep, # location of reference line at median
     linetype = "dashed", # styles line as dashed
+    color = 'black', # sets color of line
     linewidth = 0.8) + # sets thickness of line
   geom_boxplot( # Draw boxplots for each day
     aes(fill = day_of_week), # colors boxes by weekday
     width = 0.65, # sets width of boxes
     alpha = 0.45, # sets transparency level of boxes
+    color = 'gray20', # sets color of outline
     outlier.shape = NA) + # suppress default outlier points
   geom_jitter( # Add jittered points to show individual observations
     aes(color = day_of_week), # colors points by weekday
-    width = 0.12, # sets horizontal jitter
+    width = 0.11, # sets horizontal jitter
     height = 0, # no vertical jitter
-    alpha = 0.6, # sets transparency level
-    size = 2) + # sets point size
+    alpha = 0.65, # sets transparency level
+    size = 2.3) + # sets point size
   scale_fill_manual(values = week_colors, # Apply manual fill color scale
                     guide = 'none') + # removes legend
   scale_color_manual(values = week_colors, # Apply manual fill color scale
@@ -184,26 +216,26 @@ p1_box <-
   base_theme + # uses preset base theme
   # Add curved arrow annotation highlighting highest median day
   geom_curve(
-    data = NULL, # uses plot-level data
     aes(x = highlight_day , # sets arrow starting x-position 
         # sets arrow starting y-position 
-        y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.01, 
+        y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.02, 
         xend = highlight_day , # sets arrow ending x-position 
         # sets arrow ending y-position 
-        yend = med_by_day$med_sleep[med_by_day$day_of_week == highlight_day] * 1.05),
+        yend = med_by_day$med_sleep[med_by_day$day_of_week == highlight_day] * 1.02),
     curvature = -0.35, # sets degree of curve
+    linewidth = 0.7, # sets width of line
     arrow = arrow(length = unit(0.1, "inches")), # sets arrowhead size
     inherit.aes = FALSE) + # prevents inheriting global aesthetics
   annotate( "text", # Add text label describing highlighted day
             x = highlight_day, 
             # sets vertical position of label
-            y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.03,
+            y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.05,
             # creates content of label
             label = paste0("Highest median: ", round(highlight_median, 0), " min"), 
             vjust = 0, # sets vertical alignment
-            size = 3.4, # sets text size of label
+            size = 3.6, # sets text size of label
             color = "gray20", # colors text
-            family = "space") # sets font family of label
+            family = body_family) # sets font family of label
 
 p1_box # shows plot 1
 
@@ -219,11 +251,12 @@ p2_sleep_scatter <-
              y = time_slept_minutes)) + # y-axis is response (sleep duration)
   geom_bin2d(bins = 10) +   # Create rectangular bins instead of individual points 
   scale_fill_gradientn(
-    colours = palette_gradient,
+    colors = palette_gradient, # sets consistent coloration
+    guide = bottom_colorbar, # sets consistent legend settings
     name = "Number of days")+ # creates legend title 
   labs(
-    title = "Sleep Duration vs Efficiency", # sets plot title
-    x = "Sleep Efficiency (0-1)", # sets x-axis title
+    title = "Sleep Duration vs Sleep Efficiency", # sets plot title
+    x = "Sleep Efficiency (scale 0-1)", # sets x-axis title
     y = "Time slept (minutes)") + # sets y-axis title
   base_theme # uses preset base theme
 
@@ -260,7 +293,7 @@ low_sleep_day <- cleaned_data_cal |> # uses altered calender plot data
 cleaned_data_cal <- cleaned_data_cal |> # uses altered calender plot data
   mutate(low_sleep_flag = if_else(
       time_slept_minutes == min(time_slept_minutes),  # detects lowest sleep day
-      "Extreme low sleep","Normal range")) # identifies sleep range as normal or low
+      "Extreme low sleep","Normal range")) # identifies sleep range as normal/low
 
 # Compute gradient limits excluding the extreme day
 sleep_range <- cleaned_data_cal |> # uses altered calender plot data
@@ -279,34 +312,40 @@ p3_calendar <-
     aes(fill = time_slept_minutes), # fills color by time slept
     color = "white", # makes white borders between tiles
     width = 6.5, # sets tile width
-    height = 0.95, # sets tile height
+    height = 0.92, # sets tile height
     linewidth = 0.6) + # sets thickness of tile borders
   geom_tile( # Draw rectangular tiles for each date (in LOW range)
     data = cleaned_data_cal # uses cleaned data
       |> filter(low_sleep_flag == "Extreme low sleep"), # filters to outliers
-    fill = '#98a869', # colors outliers green
+    fill = outlier_green , # colors outliers green
     color = "white", # makes white borders between tiles
     width = 6.5, # sets tile width
-    height = 0.95, # sets tile height
+    height = 0.92, # sets tile height
     linewidth = 0.6) + # sets thickness of tile borders
   scale_x_date(date_labels = "%b %d") + # display axis format like "Jan 09"
   scale_fill_gradientn(
-    colors = palette_gradientA, # Define color gradient for sleep duration
-    name = "Sleep Duration (min)", # sets legend title
-    limits = c(sleep_range$min_sleep, # sets upper limit for scale
-               sleep_range$max_sleep)) + # sets lower limit for scale
+    colors = palette_gradientA, # sets consistent colors
+    name = "Sleep Duration (min)", # legend title
+    limits = c(sleep_range$min_sleep, # sets min range
+             sleep_range$max_sleep), # sets max range
+    guide = guide_colorbar(
+      barwidth = 12, # makes legend wider
+      barheight = 1.2, # makes legend taller
+      title.position = "top", # places title at top
+      title.hjust = 0.5)) + # sets horizontal alignment of title
   # flips axis so Monday appears at top of heatmap
   scale_y_discrete(limits = rev(levels(cleaned_data_cal$weekday))) +
   labs(
     title = "Sleep Calendar", # sets title
-    caption = "Green tile = outlier low-sleep day (excluded from color-scale)",
+    # sets caption
+    caption = "Green tile = outlier low-sleep day (excluded from the color scale)",
     x = "Week (starting Monday)", # sets x-axis title
-    y = "") + # no title for y-axis
+    y = NULL) + # no title for y-axis
   base_theme + # uses preset base theme
-  theme(
-    axis.text.x = element_text(angle = 30, hjust = 1), # rotate week labels 
-    panel.grid = element_blank()) # Remove background grid lines
-
+  theme(axis.text.x = element_text(angle = 30, hjust = 1), 
+        # sets angle and alignment
+        panel.grid = element_blank())
+        # determines grid
 p3_calendar # shows plot 3
 # saves plot 3 with specifications
 ggsave("plot3_calendar_heatmap.png", p3_calendar, width = 10, height = 4.8, dpi = 300)
@@ -337,80 +376,36 @@ p4_bubble <-
     data = cleaned_data_bubble # uses altered data for bubble plot
       |> filter(!sleep_outlier_flag), # selects only non-outliers
     aes(color = time_stressed_min), # colors by time stressed
-    size = 3) + # sets size to 3
+    alpha = 0.95, # sets opacity
+    size = 3.3) + # sets size 
   geom_point( # creates outlier point excluded from color-scale
     data = cleaned_data_bubble # uses altered data for bubble plot
       |> filter(sleep_outlier_flag), # selects only outlier
-    color = "#98a869", # colors outlier blue
-    size = 3) + # sets size to 3
+    color = outlier_green, # colors outlier green
+    size = 3.3) + # sets size 
   scale_x_continuous(labels = comma) + # formats x-axis with commas
   scale_color_gradientn(
     colors = palette_gradientA, # custom gradient colors
     name = "Time stressed (min)", # legend title
+    guide = bottom_colorbar, # sets consistent legend settings
     limits = c(stress_limits$min_stress, # sets min limit 
                stress_limits$max_stress)) + # sets max limit 
-  labs(title = "Steps vs Sleep (Colored by Time Stressed)", # sets title
-    caption = "Green point = low-sleep outlier", # creates caption
+  labs(title = "Steps vs Sleep Duration", # sets title
+    # creates caption
+    caption = "Green point = outlier low-sleep day; Points colored by time stressed", 
     x = "Steps", # sets x-axis title
-    y = "Time stressed (minutes)") + # sets y-axis title
-  base_theme # uses base theme
+    y = "Sleep duration (minutes)") + # sets y-axis title
+  base_theme + # uses base theme
+  theme(axis.text.x = element_text(angle = 30, hjust = 1), 
+        # sets angle and alignment
+        panel.grid = element_blank())
+        # determines grid
 
 p4_bubble # shows plot 4
 # saves plot 4 with specifications
 ggsave("plot4_steps_stress_sleep.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
 ```
 
-# Plot 5: Lollipop chart (Mean sleep by hours worked)
-```{r}
-# Summary by hours worked 
-cleaned_data_work_summary <- cleaned_data |> # uses cleaned data
-  group_by(hours_worked) |> # groups observations by hours worked
-  summarise(mean_sleep = mean(time_slept_minutes), # compute mean sleep per group
-    n_days = n(), # counts number of days in each group
-    .groups = "drop") # ungroups df
-
-overall_mean_sleep <- mean(cleaned_data$time_slept_minutes) # finds overall mean
-
-highlight_work <- cleaned_data_work_summary |> # uses summary by hours worked
-  slice_max(mean_sleep, n = 1)  # selects row with highest mean_sleep
-
-p5_lollipop <- 
-  ggplot(cleaned_data_work_summary, # uses summary by hours worked
-         aes(x = factor(hours_worked), # converts to factor for categorical x-axis
-             y = mean_sleep)) + # y-axis shows group mean sleep
-  geom_hline( # add dashed horizontal line showing overall mean sleep
-    yintercept = overall_mean_sleep, # sets line at overall mean
-    linetype = "dashed", # sets line type to dashed
-    linewidth = 0.8) + # sets line width
-  geom_segment( # adds vertical lollipop stems from 400 up to group mean
-    aes(xend = factor(hours_worked), # keeps same x-position as point
-        y = 0, # line starts at 0 min
-        yend = mean_sleep), # line ends at mean for the group
-    linewidth = 1.1) + # sets line width
-  geom_point(size = 4) + # sets size of points (at mean for group)
-  geom_text(
-    aes(label = paste0("n=", n_days)),  # labels each point with # obs in group
-    vjust = -1.2, # positions label
-    size = 3.2, # sets size of label
-    family = "space")+ # sets font family
-  geom_label(data = highlight_work, #adds label highlighting highest mean
-    aes(x = as.numeric(factor(hours_worked)), # sets x-axis position
-      y = mean_sleep + 15, # sets y-axis position
-      # writes label text
-      label = paste0("Highest average sleep\n ( worked ", hours_worked, " hrs)")), 
-    size = 3.2, # sets text size
-    family = 'space',
-    label.size = 0.2, # sets border size
-    inherit.aes = FALSE) + # prevents inheriting global aesthetics
-  labs(
-    title = "Average Sleep by Hours Worked", # sets title
-    subtitle = "Group means; labels show number of days per group", # sets subtitle
-    x = "Hours worked", # sets x-axis title
-    y = "Mean time slept (minutes)") + # sets y-axis title
-  base_theme # uses base theme
-
-p5_lollipop # shows plot 5
-# saves plot 5 with specifications
-ggsave("plot5_lollipop_hours_worked.png", p5_lollipop, width = 7.5, height = 5, dpi = 300)
-```
+# Final Write Up
+xxx to do
 

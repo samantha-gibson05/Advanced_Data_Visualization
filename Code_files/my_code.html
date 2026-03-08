@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sami Gibson">
-<meta name="dcterms.date" content="2026-02-27">
+<meta name="dcterms.date" content="2026-02-08">
 
 <title>Advanced Data Visualization</title>
 <style>
@@ -87,7 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#plot-2-scatter-bins-sleep-duration-vs-efficiency" id="toc-plot-2-scatter-bins-sleep-duration-vs-efficiency" class="nav-link" data-scroll-target="#plot-2-scatter-bins-sleep-duration-vs-efficiency">Plot 2: Scatter + Bins (Sleep duration vs efficiency)</a></li>
   <li><a href="#plot-3-calendar-style-heatmap-daily-sleep-over-time" id="toc-plot-3-calendar-style-heatmap-daily-sleep-over-time" class="nav-link" data-scroll-target="#plot-3-calendar-style-heatmap-daily-sleep-over-time">Plot 3: Calendar-style heatmap (Daily sleep over time)</a></li>
   <li><a href="#plot-4-bubble-scatter-steps-vs-sleep-duration-color-time-stressed" id="toc-plot-4-bubble-scatter-steps-vs-sleep-duration-color-time-stressed" class="nav-link" data-scroll-target="#plot-4-bubble-scatter-steps-vs-sleep-duration-color-time-stressed">Plot 4: Bubble scatter (Steps vs sleep duration; color = time stressed)</a></li>
-  <li><a href="#plot-5-lollipop-chart-mean-sleep-by-hours-worked" id="toc-plot-5-lollipop-chart-mean-sleep-by-hours-worked" class="nav-link" data-scroll-target="#plot-5-lollipop-chart-mean-sleep-by-hours-worked">Plot 5: Lollipop chart (Mean sleep by hours worked)</a></li>
+  <li><a href="#final-write-up" id="toc-final-write-up" class="nav-link" data-scroll-target="#final-write-up">Final Write Up</a></li>
   </ul>
 </nav>
 </div>
@@ -112,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 27, 2026</p>
+      <p class="date">February 8, 2026</p>
     </div>
   </div>
   
@@ -135,8 +135,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sysfonts) <span class="co"># loads in sysfonts package</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtext) <span class="co"># loads in ggtext package</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co"># loads in ggplot2 package</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis) <span class="co"># loads in viridis package</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fontawesome) <span class="co"># loads in fontawesome package</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fontawesome) <span class="co"># loads in fontawesome package</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grid) <span class="co"># loads in grid package</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Stores my personal data as an object called my_data</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">here</span>(<span class="st">'data'</span>,<span class="st">"193DS data - stress (6).csv"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -185,51 +185,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Creates custom gradient palettes</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>week_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Monday    =</span> <span class="st">"#1F77B4"</span>,  <span class="co"># strong blue</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Tuesday   =</span> <span class="st">"#3B8BC2"</span>,  <span class="co"># lighter blue</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Wednesday =</span> <span class="st">"#2A9D8F"</span>,  <span class="co"># teal</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Thursday  =</span> <span class="st">"#4FB6C4"</span>,  <span class="co"># aqua</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">Friday    =</span> <span class="st">"#6C8CD5"</span>,  <span class="co"># periwinkle</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Saturday  =</span> <span class="st">"#7B6FB6"</span>,  <span class="co"># indigo</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Sunday    =</span> <span class="st">"#9C89B8"</span>)   <span class="co"># lavender</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>palette_gradient <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#A6CEE3"</span>,  <span class="co"># light blue</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#1F78B4"</span>,  <span class="co"># medium blue</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#08306B"</span>)   <span class="co"># deep blue</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>palette_gradientA <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#F7F7F7"</span>,  <span class="co"># very light</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#A6CEE3"</span>,  <span class="co"># light blue</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#1F78B4"</span>,  <span class="co"># medium blue</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#08306B"</span>)   <span class="co"># deep blue</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a reusable base theme for all plots</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>base_theme <span class="ot">&lt;-</span> <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"space"</span>) <span class="sc">+</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Main title styling </span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> (<span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">18</span>)),</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Subtitle styling</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">8</span>)),</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Caption styling</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Axis title styling</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Axis tick label styling</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> <span class="st">"gray20"</span>),</span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend title styling</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend text styling</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>),</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend position</span></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend direction</span></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.direction =</span> <span class="st">"horizontal"</span>,</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Removes minor grid lines</span></span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keeps subtle major grid lines</span></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">linewidth =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"gray92"</span>),</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Adds margin around the edges of the plot</span></span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">10</span>, <span class="dv">12</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Monday    =</span> <span class="st">"#2F6DA3"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Tuesday   =</span> <span class="st">"#3F82B8"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Wednesday =</span> <span class="st">"#2D9C8F"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Thursday  =</span> <span class="st">"#53B7C5"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">Friday    =</span> <span class="st">"#6F8FD8"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Saturday  =</span> <span class="st">"#7C72B6"</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Sunday    =</span> <span class="st">"#9C8AB9"</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>palette_gradient <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#A6CEE3"</span>,  <span class="co"># light blue</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#1F78B4"</span>,  <span class="co"># medium blue</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#08306B"</span>)   <span class="co"># deep blue</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>palette_gradientA <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#F7F7F7"</span>,  <span class="co"># very light</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#A6CEE3"</span>,  <span class="co"># light blue</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#1F78B4"</span>,  <span class="co"># medium blue</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#08306B"</span>)   <span class="co"># deep blue</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>outlier_green <span class="ot">&lt;-</span> <span class="st">"#8A9B52"</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Shared labels</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>plot_title_family <span class="ot">&lt;-</span> <span class="st">"playfair"</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>body_family <span class="ot">&lt;-</span> <span class="st">"space"</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a reusable base theme for all plots</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>base_theme <span class="ot">&lt;-</span> <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> body_family) <span class="sc">+</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Main title styling </span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">family =</span> plot_title_family,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>                              <span class="at">face =</span> <span class="st">"bold"</span>,</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>                              <span class="at">size =</span> <span class="dv">22</span>,</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>                              <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>                              <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">6</span>)),</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Subtitle styling</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>,</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">color =</span> <span class="st">"gray25"</span>,</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">10</span>)),</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Caption styling</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>,</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>                                <span class="at">color =</span> <span class="st">"gray30"</span>,</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>                                <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>                                <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">10</span>)),</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Axis title styling</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>,</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>                              <span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Axis tick label styling</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="fl">10.5</span>,</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">color =</span> <span class="st">"gray20"</span>),</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend title styling</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>,</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>                                <span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend text styling</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>,</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="st">"gray20"</span>),</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend position</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend direction</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.direction =</span> <span class="st">"horizontal"</span>,</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>    <span class="co"># legend alignment</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.box =</span> <span class="st">"horizontal"</span>,</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Removes minor grid lines</span></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keeps subtle major grid lines</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">linewidth =</span> <span class="fl">0.25</span>, </span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">color =</span> <span class="st">"gray82"</span>),</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Adds margin around the edges of the plot</span></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">12</span>, <span class="dv">14</span>))</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Creates consistent color bar legends</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>bottom_colorbar <span class="ot">&lt;-</span> <span class="fu">guide_colorbar</span>(<span class="at">title.position =</span> <span class="st">"top"</span>, <span class="co"># sets position</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">title.hjust =</span> <span class="fl">0.5</span>,</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">barwidth =</span> <span class="fu">unit</span>(<span class="dv">7</span>, <span class="st">"cm"</span>),</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">barheight =</span> <span class="fu">unit</span>(<span class="fl">0.6</span>, <span class="st">"cm"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="plot-1-boxplot-jitter-sleep-by-day-of-week" class="level1">
 <h1>Plot 1: Boxplot + jitter (Sleep by day of week)</h1>
@@ -260,58 +290,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the boxplot visualization</span></span>
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>p1_box <span class="ot">&lt;-</span> </span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>( <span class="co"># base layer</span></span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    cleaned_data, <span class="co"># uses cleaned data</span></span>
 <span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> day_of_week, <span class="co"># x axis is categorical predictor (weekday)</span></span>
 <span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> time_slept_minutes)) <span class="sc">+</span> <span class="co"># y axis is response variable (sleep duration)</span></span>
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>( <span class="co"># Add horizontal line at overall median sleep</span></span>
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">yintercept =</span> overall_median_sleep, <span class="co"># location of reference line at median</span></span>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="co"># styles line as dashed</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span> <span class="co"># sets thickness of line</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>( <span class="co"># Draw boxplots for each day</span></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> day_of_week), <span class="co"># colors boxes by weekday</span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.65</span>, <span class="co"># sets width of boxes</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.45</span>, <span class="co"># sets transparency level of boxes</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span> <span class="co"># suppress default outlier points</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>( <span class="co"># Add jittered points to show individual observations</span></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> day_of_week), <span class="co"># colors points by weekday</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.12</span>, <span class="co"># sets horizontal jitter</span></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">height =</span> <span class="dv">0</span>, <span class="co"># no vertical jitter</span></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="co"># sets transparency level</span></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="co"># sets point size</span></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> week_colors, <span class="co"># Apply manual fill color scale</span></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>                    <span class="at">guide =</span> <span class="st">'none'</span>) <span class="sc">+</span> <span class="co"># removes legend</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> week_colors, <span class="co"># Apply manual fill color scale</span></span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>                     <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span> <span class="co"># remove duplicate legend</span></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sleep Duration by Day of Week"</span>, <span class="co"># sets plot title</span></span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Day of week"</span>, <span class="co"># sets x-axis title</span></span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Time Slept (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="sc">+</span> <span class="co"># uses preset base theme</span></span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add curved arrow annotation highlighting highest median day</span></span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_curve</span>(</span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="cn">NULL</span>, <span class="co"># uses plot-level data</span></span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> highlight_day , <span class="co"># sets arrow starting x-position </span></span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow starting y-position </span></span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="fu">max</span>(cleaned_data<span class="sc">$</span>time_slept_minutes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="fl">1.01</span>, </span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>        <span class="at">xend =</span> highlight_day , <span class="co"># sets arrow ending x-position </span></span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow ending y-position </span></span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>        <span class="at">yend =</span> med_by_day<span class="sc">$</span>med_sleep[med_by_day<span class="sc">$</span>day_of_week <span class="sc">==</span> highlight_day] <span class="sc">*</span> <span class="fl">1.05</span>),</span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.35</span>, <span class="co"># sets degree of curve</span></span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"inches"</span>)), <span class="co"># sets arrowhead size</span></span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co"># prevents inheriting global aesthetics</span></span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>( <span class="st">"text"</span>, <span class="co"># Add text label describing highlighted day</span></span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>            <span class="at">x =</span> highlight_day, </span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>            <span class="co"># sets vertical position of label</span></span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">max</span>(cleaned_data<span class="sc">$</span>time_slept_minutes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="fl">1.03</span>,</span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>            <span class="co"># creates content of label</span></span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>            <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Highest median: "</span>, <span class="fu">round</span>(highlight_median, <span class="dv">0</span>), <span class="st">" min"</span>), </span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="dv">0</span>, <span class="co"># sets vertical alignment</span></span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">3.4</span>, <span class="co"># sets text size of label</span></span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"gray20"</span>, <span class="co"># colors text</span></span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="st">"space"</span>) <span class="co"># sets font family of label</span></span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>p1_box <span class="co"># shows plot 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">'black'</span>, <span class="co"># sets color of line</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span> <span class="co"># sets thickness of line</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>( <span class="co"># Draw boxplots for each day</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> day_of_week), <span class="co"># colors boxes by weekday</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.65</span>, <span class="co"># sets width of boxes</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.45</span>, <span class="co"># sets transparency level of boxes</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">'gray20'</span>, <span class="co"># sets color of outline</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span> <span class="co"># suppress default outlier points</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>( <span class="co"># Add jittered points to show individual observations</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> day_of_week), <span class="co"># colors points by weekday</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.11</span>, <span class="co"># sets horizontal jitter</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">height =</span> <span class="dv">0</span>, <span class="co"># no vertical jitter</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="co"># sets transparency level</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">2.3</span>) <span class="sc">+</span> <span class="co"># sets point size</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> week_colors, <span class="co"># Apply manual fill color scale</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>                    <span class="at">guide =</span> <span class="st">'none'</span>) <span class="sc">+</span> <span class="co"># removes legend</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> week_colors, <span class="co"># Apply manual fill color scale</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>                     <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span> <span class="co"># remove duplicate legend</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sleep Duration by Day of Week"</span>, <span class="co"># sets plot title</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Day of week"</span>, <span class="co"># sets x-axis title</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Time Slept (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="sc">+</span> <span class="co"># uses preset base theme</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add curved arrow annotation highlighting highest median day</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_curve</span>(</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> highlight_day , <span class="co"># sets arrow starting x-position </span></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow starting y-position </span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="fu">max</span>(cleaned_data<span class="sc">$</span>time_slept_minutes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="fl">1.02</span>, </span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>        <span class="at">xend =</span> highlight_day , <span class="co"># sets arrow ending x-position </span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets arrow ending y-position </span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>        <span class="at">yend =</span> med_by_day<span class="sc">$</span>med_sleep[med_by_day<span class="sc">$</span>day_of_week <span class="sc">==</span> highlight_day] <span class="sc">*</span> <span class="fl">1.02</span>),</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.35</span>, <span class="co"># sets degree of curve</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.7</span>, <span class="co"># sets width of line</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"inches"</span>)), <span class="co"># sets arrowhead size</span></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co"># prevents inheriting global aesthetics</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>( <span class="st">"text"</span>, <span class="co"># Add text label describing highlighted day</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>            <span class="at">x =</span> highlight_day, </span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>            <span class="co"># sets vertical position of label</span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">max</span>(cleaned_data<span class="sc">$</span>time_slept_minutes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="fl">1.05</span>,</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>            <span class="co"># creates content of label</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>            <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Highest median: "</span>, <span class="fu">round</span>(highlight_median, <span class="dv">0</span>), <span class="st">" min"</span>), </span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="dv">0</span>, <span class="co"># sets vertical alignment</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">3.6</span>, <span class="co"># sets text size of label</span></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"gray20"</span>, <span class="co"># colors text</span></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> body_family) <span class="co"># sets font family of label</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>p1_box <span class="co"># shows plot 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -332,15 +364,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> time_slept_minutes)) <span class="sc">+</span> <span class="co"># y-axis is response (sleep duration)</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bin2d</span>(<span class="at">bins =</span> <span class="dv">10</span>) <span class="sc">+</span>   <span class="co"># Create rectangular bins instead of individual points </span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">colours =</span> palette_gradient,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Number of days"</span>)<span class="sc">+</span> <span class="co"># creates legend title </span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sleep Duration vs Efficiency"</span>, <span class="co"># sets plot title</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sleep Efficiency (0-1)"</span>, <span class="co"># sets x-axis title</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Time slept (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="co"># uses preset base theme</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>p2_sleep_scatter <span class="co"># shows plot 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> palette_gradient, <span class="co"># sets consistent coloration</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">guide =</span> bottom_colorbar, <span class="co"># sets consistent legend settings</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Number of days"</span>)<span class="sc">+</span> <span class="co"># creates legend title </span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sleep Duration vs Sleep Efficiency"</span>, <span class="co"># sets plot title</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sleep Efficiency (scale 0-1)"</span>, <span class="co"># sets x-axis title</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Time slept (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="co"># uses preset base theme</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>p2_sleep_scatter <span class="co"># shows plot 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -381,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>cleaned_data_cal <span class="ot">&lt;-</span> cleaned_data_cal <span class="sc">|&gt;</span> <span class="co"># uses altered calender plot data</span></span>
 <span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">low_sleep_flag =</span> <span class="fu">if_else</span>(</span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>      time_slept_minutes <span class="sc">==</span> <span class="fu">min</span>(time_slept_minutes),  <span class="co"># detects lowest sleep day</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Extreme low sleep"</span>,<span class="st">"Normal range"</span>)) <span class="co"># identifies sleep range as normal or low</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Extreme low sleep"</span>,<span class="st">"Normal range"</span>)) <span class="co"># identifies sleep range as normal/low</span></span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute gradient limits excluding the extreme day</span></span>
 <span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>sleep_range <span class="ot">&lt;-</span> cleaned_data_cal <span class="sc">|&gt;</span> <span class="co"># uses altered calender plot data</span></span>
@@ -400,35 +433,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> time_slept_minutes), <span class="co"># fills color by time slept</span></span>
 <span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"white"</span>, <span class="co"># makes white borders between tiles</span></span>
 <span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">6.5</span>, <span class="co"># sets tile width</span></span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">height =</span> <span class="fl">0.95</span>, <span class="co"># sets tile height</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">height =</span> <span class="fl">0.92</span>, <span class="co"># sets tile height</span></span>
 <span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span> <span class="co"># sets thickness of tile borders</span></span>
 <span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>( <span class="co"># Draw rectangular tiles for each date (in LOW range)</span></span>
 <span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cleaned_data_cal <span class="co"># uses cleaned data</span></span>
 <span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>      <span class="sc">|&gt;</span> <span class="fu">filter</span>(low_sleep_flag <span class="sc">==</span> <span class="st">"Extreme low sleep"</span>), <span class="co"># filters to outliers</span></span>
-<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">'#98a869'</span>, <span class="co"># colors outliers green</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> outlier_green , <span class="co"># colors outliers green</span></span>
 <span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"white"</span>, <span class="co"># makes white borders between tiles</span></span>
 <span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">6.5</span>, <span class="co"># sets tile width</span></span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">height =</span> <span class="fl">0.95</span>, <span class="co"># sets tile height</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">height =</span> <span class="fl">0.92</span>, <span class="co"># sets tile height</span></span>
 <span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span> <span class="co"># sets thickness of tile borders</span></span>
 <span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b %d"</span>) <span class="sc">+</span> <span class="co"># display axis format like "Jan 09"</span></span>
 <span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(</span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> palette_gradientA, <span class="co"># Define color gradient for sleep duration</span></span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Sleep Duration (min)"</span>, <span class="co"># sets legend title</span></span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(sleep_range<span class="sc">$</span>min_sleep, <span class="co"># sets upper limit for scale</span></span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>               sleep_range<span class="sc">$</span>max_sleep)) <span class="sc">+</span> <span class="co"># sets lower limit for scale</span></span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># flips axis so Monday appears at top of heatmap</span></span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> <span class="fu">rev</span>(<span class="fu">levels</span>(cleaned_data_cal<span class="sc">$</span>weekday))) <span class="sc">+</span></span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sleep Calendar"</span>, <span class="co"># sets title</span></span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Green tile = outlier low-sleep day (excluded from color-scale)"</span>,</span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Week (starting Monday)"</span>, <span class="co"># sets x-axis title</span></span>
-<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span> <span class="co"># no title for y-axis</span></span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="sc">+</span> <span class="co"># uses preset base theme</span></span>
-<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span>, <span class="at">hjust =</span> <span class="dv">1</span>), <span class="co"># rotate week labels </span></span>
-<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()) <span class="co"># Remove background grid lines</span></span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>p3_calendar <span class="co"># shows plot 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> palette_gradientA, <span class="co"># sets consistent colors</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Sleep Duration (min)"</span>, <span class="co"># legend title</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(sleep_range<span class="sc">$</span>min_sleep, <span class="co"># sets min range</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>             sleep_range<span class="sc">$</span>max_sleep), <span class="co"># sets max range</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">guide =</span> <span class="fu">guide_colorbar</span>(</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>      <span class="at">barwidth =</span> <span class="dv">12</span>, <span class="co"># makes legend wider</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>      <span class="at">barheight =</span> <span class="fl">1.2</span>, <span class="co"># makes legend taller</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>      <span class="at">title.position =</span> <span class="st">"top"</span>, <span class="co"># places title at top</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>      <span class="at">title.hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span> <span class="co"># sets horizontal alignment of title</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>  <span class="co"># flips axis so Monday appears at top of heatmap</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> <span class="fu">rev</span>(<span class="fu">levels</span>(cleaned_data_cal<span class="sc">$</span>weekday))) <span class="sc">+</span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sleep Calendar"</span>, <span class="co"># sets title</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sets caption</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Green tile = outlier low-sleep day (excluded from the color scale)"</span>,</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Week (starting Monday)"</span>, <span class="co"># sets x-axis title</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="co"># no title for y-axis</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="sc">+</span> <span class="co"># uses preset base theme</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span>, <span class="at">hjust =</span> <span class="dv">1</span>), </span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets angle and alignment</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>        <span class="co"># determines grid</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>p3_calendar <span class="co"># shows plot 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -465,25 +504,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cleaned_data_bubble <span class="co"># uses altered data for bubble plot</span></span>
 <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>      <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span>sleep_outlier_flag), <span class="co"># selects only non-outliers</span></span>
 <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> time_stressed_min), <span class="co"># colors by time stressed</span></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="co"># sets size to 3</span></span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>( <span class="co"># creates outlier point excluded from color-scale</span></span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cleaned_data_bubble <span class="co"># uses altered data for bubble plot</span></span>
-<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>      <span class="sc">|&gt;</span> <span class="fu">filter</span>(sleep_outlier_flag), <span class="co"># selects only outlier</span></span>
-<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#98a869"</span>, <span class="co"># colors outlier blue</span></span>
-<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="co"># sets size to 3</span></span>
-<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span> <span class="co"># formats x-axis with commas</span></span>
-<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_gradientn</span>(</span>
-<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> palette_gradientA, <span class="co"># custom gradient colors</span></span>
-<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Time stressed (min)"</span>, <span class="co"># legend title</span></span>
-<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(stress_limits<span class="sc">$</span>min_stress, <span class="co"># sets min limit </span></span>
-<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>               stress_limits<span class="sc">$</span>max_stress)) <span class="sc">+</span> <span class="co"># sets max limit </span></span>
-<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Steps vs Sleep (Colored by Time Stressed)"</span>, <span class="co"># sets title</span></span>
-<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Green point = low-sleep outlier"</span>, <span class="co"># creates caption</span></span>
-<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Steps"</span>, <span class="co"># sets x-axis title</span></span>
-<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Time stressed (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
-<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="co"># uses base theme</span></span>
-<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>p4_bubble <span class="co"># shows plot 4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.95</span>, <span class="co"># sets opacity</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.3</span>) <span class="sc">+</span> <span class="co"># sets size </span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>( <span class="co"># creates outlier point excluded from color-scale</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cleaned_data_bubble <span class="co"># uses altered data for bubble plot</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>      <span class="sc">|&gt;</span> <span class="fu">filter</span>(sleep_outlier_flag), <span class="co"># selects only outlier</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> outlier_green, <span class="co"># colors outlier green</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.3</span>) <span class="sc">+</span> <span class="co"># sets size </span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span> <span class="co"># formats x-axis with commas</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_gradientn</span>(</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> palette_gradientA, <span class="co"># custom gradient colors</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Time stressed (min)"</span>, <span class="co"># legend title</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">guide =</span> bottom_colorbar, <span class="co"># sets consistent legend settings</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(stress_limits<span class="sc">$</span>min_stress, <span class="co"># sets min limit </span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>               stress_limits<span class="sc">$</span>max_stress)) <span class="sc">+</span> <span class="co"># sets max limit </span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Steps vs Sleep Duration"</span>, <span class="co"># sets title</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># creates caption</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Green point = outlier low-sleep day; Points colored by time stressed"</span>, </span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Steps"</span>, <span class="co"># sets x-axis title</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Sleep duration (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="sc">+</span> <span class="co"># uses base theme</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span>, <span class="at">hjust =</span> <span class="dv">1</span>), </span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># sets angle and alignment</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># determines grid</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>p4_bubble <span class="co"># shows plot 4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -495,67 +541,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"plot4_steps_stress_sleep.png"</span>, p4_bubble, <span class="at">width =</span> <span class="fl">7.5</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="plot-5-lollipop-chart-mean-sleep-by-hours-worked" class="level1">
-<h1>Plot 5: Lollipop chart (Mean sleep by hours worked)</h1>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary by hours worked </span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cleaned_data_work_summary <span class="ot">&lt;-</span> cleaned_data <span class="sc">|&gt;</span> <span class="co"># uses cleaned data</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(hours_worked) <span class="sc">|&gt;</span> <span class="co"># groups observations by hours worked</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_sleep =</span> <span class="fu">mean</span>(time_slept_minutes), <span class="co"># compute mean sleep per group</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_days =</span> <span class="fu">n</span>(), <span class="co"># counts number of days in each group</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="co"># ungroups df</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>overall_mean_sleep <span class="ot">&lt;-</span> <span class="fu">mean</span>(cleaned_data<span class="sc">$</span>time_slept_minutes) <span class="co"># finds overall mean</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>highlight_work <span class="ot">&lt;-</span> cleaned_data_work_summary <span class="sc">|&gt;</span> <span class="co"># uses summary by hours worked</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(mean_sleep, <span class="at">n =</span> <span class="dv">1</span>)  <span class="co"># selects row with highest mean_sleep</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>p5_lollipop <span class="ot">&lt;-</span> </span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(cleaned_data_work_summary, <span class="co"># uses summary by hours worked</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>         <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(hours_worked), <span class="co"># converts to factor for categorical x-axis</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> mean_sleep)) <span class="sc">+</span> <span class="co"># y-axis shows group mean sleep</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>( <span class="co"># add dashed horizontal line showing overall mean sleep</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">yintercept =</span> overall_mean_sleep, <span class="co"># sets line at overall mean</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="co"># sets line type to dashed</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span> <span class="co"># sets line width</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>( <span class="co"># adds vertical lollipop stems from 400 up to group mean</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xend =</span> <span class="fu">factor</span>(hours_worked), <span class="co"># keeps same x-position as point</span></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="dv">0</span>, <span class="co"># line starts at 0 min</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">yend =</span> mean_sleep), <span class="co"># line ends at mean for the group</span></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span> <span class="co"># sets line width</span></span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span> <span class="co"># sets size of points (at mean for group)</span></span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"n="</span>, n_days)),  <span class="co"># labels each point with # obs in group</span></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">1.2</span>, <span class="co"># positions label</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.2</span>, <span class="co"># sets size of label</span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">"space"</span>)<span class="sc">+</span> <span class="co"># sets font family</span></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(<span class="at">data =</span> highlight_work, <span class="co">#adds label highlighting highest mean</span></span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(<span class="fu">factor</span>(hours_worked)), <span class="co"># sets x-axis position</span></span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> mean_sleep <span class="sc">+</span> <span class="dv">15</span>, <span class="co"># sets y-axis position</span></span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>      <span class="co"># writes label text</span></span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Highest average sleep</span><span class="sc">\n</span><span class="st"> ( worked "</span>, hours_worked, <span class="st">" hrs)"</span>)), </span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.2</span>, <span class="co"># sets text size</span></span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">'space'</span>,</span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">label.size =</span> <span class="fl">0.2</span>, <span class="co"># sets border size</span></span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co"># prevents inheriting global aesthetics</span></span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Sleep by Hours Worked"</span>, <span class="co"># sets title</span></span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Group means; labels show number of days per group"</span>, <span class="co"># sets subtitle</span></span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Hours worked"</span>, <span class="co"># sets x-axis title</span></span>
-<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Mean time slept (minutes)"</span>) <span class="sc">+</span> <span class="co"># sets y-axis title</span></span>
-<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>  base_theme <span class="co"># uses base theme</span></span>
-<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>p5_lollipop <span class="co"># shows plot 5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="my_code_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># saves plot 5 with specifications</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"plot5_lollipop_hours_worked.png"</span>, p5_lollipop, <span class="at">width =</span> <span class="fl">7.5</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="final-write-up" class="level1">
+<h1>Final Write Up</h1>
+<p>xxx to do</p>
 </section>
 
 </main>
