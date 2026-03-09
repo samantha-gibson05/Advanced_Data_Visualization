@@ -87,7 +87,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#plot-2-scatter-bins-sleep-duration-vs-efficiency" id="toc-plot-2-scatter-bins-sleep-duration-vs-efficiency" class="nav-link" data-scroll-target="#plot-2-scatter-bins-sleep-duration-vs-efficiency">Plot 2: Scatter + Bins (Sleep duration vs efficiency)</a></li>
   <li><a href="#plot-3-calendar-style-heatmap-daily-sleep-over-time" id="toc-plot-3-calendar-style-heatmap-daily-sleep-over-time" class="nav-link" data-scroll-target="#plot-3-calendar-style-heatmap-daily-sleep-over-time">Plot 3: Calendar-style heatmap (Daily sleep over time)</a></li>
   <li><a href="#plot-4-bubble-scatter-steps-vs-sleep-duration-color-time-stressed" id="toc-plot-4-bubble-scatter-steps-vs-sleep-duration-color-time-stressed" class="nav-link" data-scroll-target="#plot-4-bubble-scatter-steps-vs-sleep-duration-color-time-stressed">Plot 4: Bubble scatter (Steps vs sleep duration; color = time stressed)</a></li>
-  <li><a href="#final-write-up" id="toc-final-write-up" class="nav-link" data-scroll-target="#final-write-up">Final Write Up</a></li>
+  <li><a href="#write-up" id="toc-write-up" class="nav-link" data-scroll-target="#write-up">Write Up</a>
+  <ul class="collapse">
+  <li><a href="#general-information-about-design-and-visualization" id="toc-general-information-about-design-and-visualization" class="nav-link" data-scroll-target="#general-information-about-design-and-visualization">General information about design and visualization</a></li>
+  <li><a href="#sources-and-process" id="toc-sources-and-process" class="nav-link" data-scroll-target="#sources-and-process">Sources and process</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -541,9 +545,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"plot4_steps_stress_sleep.png"</span>, p4_bubble, <span class="at">width =</span> <span class="fl">7.5</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="final-write-up" class="level1">
-<h1>Final Write Up</h1>
-<p>xxx to do</p>
+<section id="write-up" class="level1">
+<h1>Write Up</h1>
+<section id="general-information-about-design-and-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="general-information-about-design-and-visualization">General information about design and visualization</h2>
+<p>What patterns are you highlighting in each visualization? Why?</p>
+<p>The boxplot with jitter highlights how sleep duration varies across the days of the week while still showing individual observations and variability. The sleep duration versus efficiency plot emphasizes where most observations cluster, revealing that longer sleep tends to occur with higher sleep efficiency. The calendar heatmap shows how sleep duration changes over time and highlights unusual low-sleep days, while the steps versus sleep plot explores whether activity and stress appear to relate to sleep duration.</p>
+<p>Outside of the data visualization, what aesthetic choices (e.g.&nbsp;color, font, arrangement) did you make and why? In what way do your choices contribute to a compelling or interesting narrative?</p>
+<p>I used custom color palettes including variations of blues for my plots as well as my infographic background and text to create a visually cohesive theme across my infographic and visualizations. Additionally I chose fonts to use for headers (serif) and body text (sans-serif) that remained consistent throughout. because it aligns visually with the theme of rest and helps maintain cohesion across figures. I also dedcided to use minimal grid lines, consistent legend placement, and text sizes to keep the focus on the data while creating a polished and cohesive visual narrative.</p>
+</section>
+<section id="sources-and-process" class="level2">
+<h2 class="anchored" data-anchor-id="sources-and-process">Sources and process</h2>
+<p>For each visualization, describe what examples inspired that visualization (cite the author)</p>
+<p>My inspiration for the labeling and arrows on my boxplot (plot 1) comes Cédric Scherer’s article titled <a href="https://www.cedricscherer.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/#final">The Evolution of a ggplot (Ep. 1)</a> and I drew the idea for my binned scatterplot (plot 2) from Alboukadel Kassambara’s article <a href="https://www.sthda.com/english/wiki/ggplot2-scatter-plots-quick-start-guide-r-software-and-data-visualization#google_vignette">ggplot2 scatter plots : Quick start guide - R software and data visualization</a>. My inspiration for the heatmap (plot 3) visualization came from Daniel Emaasit’s article on <a href="https://exts.ggplot2.tidyverse.org/ggTimeSeries.html">ggplot2 extensions</a>. Lastly, I was inspired to add the dimension of color to my scatter plot from the website <a href="https://r-graph-gallery.com/320-the-basis-of-bubble-plot.html">Bubble plot with ggplot2</a> created by Yan Holtz.</p>
+<p>Describe your coding process, for example (not the only options for this prompt): did you have to clean up/summarize the data before you started? Which geoms did you start with? What geoms did you end up using, and why?</p>
+<p>Describe the tools you used: other people’s code? Google/StackOverflow? ChatGPT (with examples of prompts)?</p>
+</section>
 </section>
 
 </main>

@@ -406,6 +406,27 @@ p4_bubble # shows plot 4
 ggsave("plot4_steps_stress_sleep.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
 ```
 
-# Final Write Up
-xxx to do
+# Write Up
+## General information about design and visualization
+What patterns are you highlighting in each visualization? Why?
+
+The boxplot with jitter highlights how sleep duration varies across the days of the week while still showing individual observations and variability. The sleep duration versus efficiency plot emphasizes where most observations cluster, revealing that longer sleep tends to occur with higher sleep efficiency. The calendar heatmap shows how sleep duration changes over time and highlights unusual low-sleep days, while the steps versus sleep plot explores whether activity and stress appear to relate to sleep duration.
+
+Outside of the data visualization, what aesthetic choices (e.g. color, font, arrangement) did you make and why? In what way do your choices contribute to a compelling or interesting narrative?
+
+I used custom color palettes including variations of blues for my plots as well as my infographic background and text to create a visually cohesive theme across my infographic and visualizations. Additionally I chose fonts to use for headers (serif) and body text (sans-serif) that remained consistent throughout.  because it aligns visually with the theme of rest and helps maintain cohesion across figures. I also dedcided to use minimal grid lines, consistent legend placement, and text sizes  to keep the focus on the data while creating a polished and cohesive visual narrative.
+
+## Sources and process
+
+For each visualization, describe what examples inspired that visualization (cite the author)
+
+My inspiration for the labeling and arrows on my boxplot (plot 1) comes Cédric Scherer's article titled [The Evolution of a ggplot (Ep. 1)](https://www.cedricscherer.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/#final) and I drew the idea for my binned scatterplot (plot 2) from Alboukadel Kassambara's article [ggplot2 scatter plots : Quick start guide - R software and data  visualization](https://www.sthda.com/english/wiki/ggplot2-scatter-plots-quick-start-guide-r-software-and-data-visualization#google_vignette). My inspiration for the heatmap (plot 3) visualization came from Daniel Emaasit's article on [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/ggTimeSeries.html). Lastly, I was inspired to add the dimension of color to my scatter plot from the website [Bubble plot with ggplot2](https://r-graph-gallery.com/320-the-basis-of-bubble-plot.html) created by Yan Holtz.
+
+Describe your coding process, for example (not the only options for this prompt): did you have to clean up/summarize the data before you started? Which geoms did you start with? What geoms did you end up using, and why?
+
+I first cleaned and prepared the dataset by standardizing column names (using `clean_names()`), converting the date column into a proper date format (using `mutate()`), ordering weekday factors (using `factor()`), and converting sleep efficiency into a numeric proportion (using `parse_number()`) . I created each visualization using geoms including `geom_hline`, `geom_boxplot`, `geom_jitter`, `geom_curve`, `geom_bin2d`, and `geom_tile` the layered geoms to improve interpretation by adding jittered points, reference lines, and arrows. I needed to do transformations on the data for individual plots like grouping by weekday to calculate medians, restructuring the data to create a calendar-style layout, and flagging an outlier in order to remove it from color gradients.
+
+Describe the tools you used: other people’s code? Google/StackOverflow? ChatGPT (with examples of prompts)?
+
+I used R with the `tidyverse` and `ggplot2` for all data cleaning, transformation, and visualization. Supporting packages such as `lubridate`, `janitor`, `scales`, `showtext`, and `sysfonts` were used to handle dates, clean variable names, format axes, and customize fonts. I also used ChatGPT to troubleshoot issues with commits (prompts like: How can I fix this error?) and improve consistency across plots (prompts asking for ideas to make plots more consistent).
 
