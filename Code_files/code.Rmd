@@ -1,0 +1,29 @@
+---
+title: "Advanced Data Visualization"
+author: "Sami Gibson"
+date: "2026-02-27"
+output: html_document
+toc: True
+---
+
+**Set up Chunk**
+```{r}
+#| label: Set Up Chunk
+#| message: false
+#| warning: false
+
+library(tidyverse) # loads in tidyverse package
+library(janitor) # loads in janitor package
+library(lubridate) # loads in lubridate package
+library(here) # loads in here package
+library(scales) # loads in scales package
+library(showtext) # loads in showtext package
+library(sysfonts) # loads in sysfonts package
+library(ggtext) # loads in ggtext package
+library(ggplot2) # loads in ggplot2 package
+library(fontawesome) # loads in fontawesome package
+
+# Stores my personal data as an object called my_data
+my_data <- read.csv(here('data',"193DS data - stress (4).csv")) 
+```
+

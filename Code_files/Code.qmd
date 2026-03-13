@@ -1,0 +1,290 @@
+---
+title: "Advanced Data Visualization Code"
+author: "Sami Gibson"
+format: html
+editor: visual
+toc: True
+---
+
+**Set up Chunk**
+```{r}
+#| label: Set Up Chunk
+#| message: false
+#| warning: false
+
+library(tidyverse) # loads in tidyverse package
+library(janitor) # loads in janitor package
+library(lubridate) # loads in lubridate package
+library(here) # loads in here package
+library(scales) # loads in scales package
+library(showtext) # loads in showtext package
+library(sysfonts) # loads in sysfonts package
+library(ggtext) # loads in ggtext package
+library(ggplot2) # loads in ggplot2 package
+library(fontawesome) # loads in fontawesome package
+
+raw_data <- read_csv("193DS data - stress (2).csv") # loads in data
+```
+
+
+**Cleaning data**
+```{r}
+cleaned_data <- 
+  raw_data |> 
+  clean_names() |>
+  rename(
+    time_stressed_min = time_stressed_min,
+    time_slept_minutes = time_slept_minutes,
+    number_of_classes = number_of_classes,
+    number_of_steps = number_of_steps,
+    sleep_efficiency = sleep_efficiency_percent,
+    hours_worked = hours_worked,
+    pilates = pilates) |>
+  mutate(
+    date = mdy(date_mm_dd_yyyy),
+    day_of_week = factor( 
+      day_of_week,
+      levels = c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")),
+    sleep_efficiency = parse_number(as.character(sleep_efficiency)) / 100,
+    pilates = factor(pilates, levels = c("No","Yes")))
+```
+
+**Metadata**
+```{r}
+n_obs <- nrow(cleaned_data)
+min_date <- min(cleaned_data$date, na.rm = TRUE)
+max_date <- max(cleaned_data$date, na.rm = TRUE)
+meta_data <- paste0(
+  "Sami Gibson | ", format(min_date, "%b %d, %Y"), "–", format(max_date, "%b %d, %Y"),
+  " | n = ", n_obs, " days | Last obs: ", format(max_date, "%b %d, %Y"))
+meta_data
+```
+
+**Aesthetics Set up**
+```{r}
+font_add_google("DM Sans", "dm")
+showtext_auto()
+
+
+base_theme <- theme_minimal(base_family = "dm") +
+  theme(
+    plot.title = (element_text(face = "bold", size = 16)), 
+    plot.subtitle = element_text(size = 11),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9))
+
+```
+
+
+# Plot 1: Boxplot + jitter (Stress by day of week) 
+
+```{r}
+overall_median_stress <- median(cleaned_data$time_stressed_min, na.rm = TRUE)
+
+week_colors <- c(
+  "Monday" = "coral",
+  "Tuesday" = "steelblue",
+  "Wednesday" = "lavender",
+  "Thursday" = "pink",
+  "Friday" = "limegreen",
+  "Saturday" = "yellow",
+  "Sunday" = "lightblue"
+)
+
+# identify a “highlight day” (highest median stress)
+med_by_day <- cleaned_data |>
+  group_by(day_of_week) |>
+  summarize(med_stress = median(time_stressed_min, na.rm = TRUE), .groups = "drop")
+
+highlight_day <- med_by_day |>
+  slice_max(med_stress, n = 1) |>
+  pull(day_of_week) |>
+  as.character()
+
+p1_box <- 
+  ggplot(
+    cleaned_data, 
+    aes(x = day_of_week, y = time_stressed_min)) +
+  geom_hline(
+    yintercept = overall_median_stress,
+    linetype = "dashed",
+    linewidth = 0.8) +
+  geom_boxplot(
+    aes(fill = day_of_week), 
+    width = 0.65, 
+    alpha = 0.45, 
+    outlier.shape = NA) +
+  geom_jitter(
+    aes(color = day_of_week), 
+    width = 0.12, 
+    height = 0, 
+    alpha = 0.6, 
+    size = 2) +
+  scale_fill_manual(values = week_colors) +
+  scale_color_manual(values = week_colors, guide = "none") +
+  labs(
+    title = "Stress by Day of Week",
+    x = "Day of week",
+    y = "Time stressed (minutes)") +
+  base_theme +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  # Add-on: curved annotation arrow (geom_curve) to highlight highest median day
+  geom_curve(
+    data = NULL,
+    aes(x = highlight_day, 
+        y = max(cleaned_data$time_stressed_min, na.rm = TRUE) * 0.98,
+        xend = highlight_day, 
+        yend = med_by_day$med_stress[med_by_day$day_of_week == highlight_day]),
+    curvature = -0.35,
+    arrow = arrow(length = unit(0.15, "inches")),
+    inherit.aes = FALSE) +
+  annotate(
+    "text",
+    x = highlight_day,
+    y = max(cleaned_data$time_stressed_min, na.rm = TRUE) * 1.03,
+    label = paste0("Highest median: ", highlight_day),
+    vjust = 0,
+    size = 3.5,
+    family = "dm")
+
+p1_box
+
+# Save
+ggsave("plot1_stress_by_day.png", p1_box, width = 9, height = 5, dpi = 300)
+```
+# Plot 2: Scatter + Bins (Sleep minutes vs stress)
+```{r}
+p2_sleep_scatter <- ggplot(cleaned_data,
+                      aes(x = time_slept_minutes,
+                          y = time_stressed_min)) +
+
+  # --- Rectangular bins (density of observations) ---
+  geom_bin2d(bins = 5) +
+  scale_fill_gradient(
+    name = "Number of days",
+    low = "green",
+    high = "darkblue") +
+  labs(
+    title = "Sleep Duration vs Stress Scatter with Bins",
+    x = "Time slept (minutes)",
+    y = "Time stressed (minutes)") +
+  base_theme
+p2_sleep_scatter
+ggsave("plot2_sleep_vs_stress.png", p2_sleep_scatter, width = 7.5, height = 5, dpi = 300)
+
+```
+# Plot 3: Calendar-style heatmap (Daily stress over time)
+```{r}
+# Build week index + weekday to create calendar grid
+cleaned_data_cal <- cleaned_data |>
+  mutate(
+    weekday = factor(wday(date, label = TRUE, abbr = FALSE), 
+                     levels = c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")),
+    week = floor_date(date, unit = "week", week_start = 1))
+
+p3_calendar <- 
+  ggplot(
+    cleaned_data_cal, 
+    aes(x = week, y = weekday, fill = time_stressed_min)) +
+  geom_tile(color = "white", linewidth = 0.6) +
+  scale_x_date(date_labels = "%b %d") +
+  scale_fill_gradient(
+    name = "Stress (min)",
+    low = "white",
+    high = "black") +
+  labs(
+    title = "Stress Calendar (Daily Heatmap)",
+    x = "Week (starting Monday)",
+    y = "") +
+  base_theme +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    panel.grid = element_blank())
+
+p3_calendar
+ggsave("plot3_calendar_heatmap.png", p3_calendar, width = 10, height = 4.8, dpi = 300)
+```
+# Plot 4: Bubble scatter (Steps vs stress; size = sleep efficiency)
+```{r}
+# want to change scale xxx
+p4_bubble <- 
+  ggplot(
+    cleaned_data, 
+    aes(x = number_of_steps, y = time_stressed_min)) +
+  geom_point(
+    aes(size = sleep_efficiency, color = sleep_efficiency),
+    alpha = 0.5) +
+  scale_x_continuous(labels = comma) +
+  scale_size_continuous(
+    name = "Sleep efficiency",
+    labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "Steps vs Stress (Sized by Sleep Efficiency)",
+    x = "Steps",
+    y = "Time stressed (minutes)") +
+  base_theme
+
+p4_bubble
+ggsave("plot4_steps_stress_efficiency.png", p4_bubble, width = 7.5, height = 5, dpi = 300)
+```
+# Plot 5: Lollipop chart (Mean stress by hours worked)
+```{r}
+# Identify highest mean stress category
+highlight_work <- cleaned_data_work_summary |>
+  slice_max(mean_stress, n = 1)
+
+p5_lollipop <- 
+  ggplot(
+    cleaned_data_work_summary, 
+    aes(x = factor(hours_worked), 
+        y = mean_stress)) +
+  # Overall median reference line
+  geom_hline(
+    yintercept = overall_median_stress,
+    linetype = "dashed",
+    linewidth = 0.8) +
+  # Lollipop stems
+  geom_segment(
+    aes(x = factor(hours_worked), 
+        xend = factor(hours_worked), 
+        y = 0, 
+        yend = mean_stress),
+    linewidth = 1.1) +
+  geom_point(size = 4) +
+  # Sample size labels
+  geom_text(
+    aes(label = paste0("n=", n_days)),
+    vjust = -1.2,
+    size = 3.3) +
+  # --- Callout arrow ---
+  geom_curve(
+    data = highlight_work,
+    aes(x = hours_worked - 1,
+        y = mean_stress + 70,
+        xend = hours_worked,
+        yend = mean_stress),
+    curvature = 0.25,
+    arrow = arrow(length = unit(0.18, "inches")),
+    inherit.aes = FALSE) +
+  geom_label(
+    data = highlight_work,
+    aes(x = hours_worked - 1,
+        y = mean_stress + 70,
+        label = paste0("Highest average stress\n(", hours_worked, " hrs)")),
+    size = 3.3,
+    label.size = 0.2,
+    inherit.aes = FALSE) +
+  labs(title = "Average Stress by Hours Worked",
+       subtitle = "Grouped means; labels show n days per group",
+       x = "Hours worked",
+       y = "Mean time stressed (minutes)") +
+  base_theme
+
+p5_lollipop
+
+ggsave("plot5_lollipop_hours_worked.png", p5_lollipop, width = 7.5, height = 5, dpi = 300)
+```
+
+
