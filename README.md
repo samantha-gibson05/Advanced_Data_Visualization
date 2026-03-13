@@ -1,5 +1,7 @@
 # Advanced_Data_Visualization
 Choose your own assignment (Advanced data visualization)
+## Final Inforgraphic 
+[Here is the link to my final infographic](https://www.canva.com/design/DAHC6cZAPQk/vyVSFfNY_KDFdYO990sKWg/edit?utm_content=DAHC6cZAPQk&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ## General information
 **What is this repo for?**
