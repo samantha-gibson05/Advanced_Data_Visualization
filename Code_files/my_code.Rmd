@@ -70,8 +70,8 @@ Create base theme + aesthetics (xxx might change later)
 ```{r}
 # Loads custom fonts 
 # "Playfair Display" will be used for titles
-# "Space Grotesk" will be used for axis labels and body text 
 font_add_google("Playfair Display", "playfair")
+# "Space Grotesk" will be used for axis labels and body text 
 font_add_google("Space Grotesk", "space")
 # Activate showtext so ggplot can render fonts
 showtext_auto()
@@ -84,75 +84,66 @@ week_colors <- c(
   Thursday  = "#53B7C5",
   Friday    = "#6F8FD8",
   Saturday  = "#7C72B6",
-  Sunday    = "#9C8AB9"
-)
-  
-palette_gradient <- c(
-  "#A6CEE3",  # light blue
-  "#1F78B4",  # medium blue
-  "#08306B")   # deep blue
+  Sunday    = "#9C8AB9")
 
-palette_gradientA <- c(
-  "#F7F7F7",  # very light
-  "#A6CEE3",  # light blue
-  "#1F78B4",  # medium blue
-  "#08306B")   # deep blue
+# Creates custom gradient palettes
+palette_gradient <- c("#A6CEE3","#1F78B4", "#08306B")  
 
+# Creates custom gradient palettes
+palette_gradientA <- c("#F7F7F7", "#A6CEE3", "#1F78B4", "#08306B")
+
+# creates custom color for outlier
 outlier_green <- "#8A9B52"
 
-# Shared labels
+# creates objects that will be used for title fonts
 plot_title_family <- "playfair"
+# creates objects that will be used for body text fonts
 body_family <- "space"
 
 # Create a reusable base theme for all plots
-base_theme <- theme_minimal(base_family = body_family) +
+base_theme <- theme_minimal(base_family = body_family) + # sets body text font
   theme(
     # Main title styling 
-    plot.title = element_text(family = plot_title_family,
-                              face = "bold",
-                              size = 22,
-                              color = "black",
-                              margin = margin(b = 6)),
+    plot.title = element_text(family = plot_title_family, # sets title text font
+                              face = "bold", # sets title text to bold
+                              size = 22, # sets title text size
+                              color = "black", # sets title text color
+                              margin = margin(b = 6)), # sets margin
     # Subtitle styling
-    plot.subtitle = element_text(size = 11,
-                                 color = "gray25",
-                                 margin = margin(b = 10)),
+    plot.subtitle = element_text(size = 11, # sets subtitle text size
+                                 color = "gray25", # sets subtitle text color
+                                 margin = margin(b = 10)), # sets margin
     # Caption styling
-    plot.caption = element_text(size = 10,
-                                color = "gray30",
-                                hjust = 0,
-                                margin = margin(t = 10)),
+    plot.caption = element_text(size = 10, # sets caption size
+                                color = "gray30", # sets caption color
+                                hjust = 0, # sets caption alignment
+                                margin = margin(t = 10)), # sets margin
     # Axis title styling
-    axis.title = element_text(size = 12,
-                              color = "black"),
+    axis.title = element_text(size = 12, # sets axis title size
+                              color = "black"), # sets axis title color
     # Axis tick label styling
-    axis.text = element_text(size = 10.5,
-                                         color = "gray20"),
+    axis.text = element_text(size = 10.5, # sets axis tick label size
+                             color = "gray20"), # sets axis tick label color
     # Legend title styling
-    legend.title = element_text(size = 11,
-                                color = "black"),
-    # Legend text styling
-    legend.text = element_text(size = 10,
-                               color = "gray20"),
-    # Legend position
-    legend.position = "bottom",
-    # Legend direction
-    legend.direction = "horizontal",
-    # legend alignment
-    legend.box = "horizontal",
-    # Removes minor grid lines
-    panel.grid.minor = element_blank(),
+    legend.title = element_text(size = 11, # sets legend title size
+                                color = "black"), # sets legend title color
+    # Legend text styling 
+    legend.text = element_text(size = 10, # sets legend text size
+                               color = "gray20"), # sets legend text color
+    legend.position = "bottom", # sets legend position to bottom of graph
+    legend.direction = "horizontal", # sets legend position to horizontal
+    legend.box = "horizontal", # sets legend alignment to horizontal
+    panel.grid.minor = element_blank(), # Removes minor grid lines
     # Keeps subtle major grid lines
-    panel.grid.major = element_line(linewidth = 0.25, 
-                                    color = "gray82"),
-    # Adds margin around the edges of the plot
-    plot.margin = margin(12, 14, 12, 14))
-    
-    # Creates consistent color bar legends
+    panel.grid.major = element_line(linewidth = 0.25, # sets gridline width
+                                    color = "gray82"), # sets gridline color
+    plot.margin = margin(12, 14, 12, 14)) # Adds margin around edges of plot
+
+# Creates consistent settings for color bar legends
 bottom_colorbar <- guide_colorbar(title.position = "top", # sets position
-                                  title.hjust = 0.5,
-                                  barwidth = unit(7, "cm"),
-                                  barheight = unit(0.6, "cm"))
+                                  title.hjust = 0.5, # sets alignment
+                                  barwidth = unit(7, "cm"), # sets width
+                                  barheight = unit(0.6, "cm")) # sets height
 ```
 
 # Plot 1: Boxplot + jitter (Sleep by day of week)
@@ -160,24 +151,24 @@ bottom_colorbar <- guide_colorbar(title.position = "top", # sets position
 ```{r}
 # Compute overall median sleep duration across all days (for reference line)
 overall_median_sleep <- median(
-  cleaned_data$time_slept_minutes, # numeric vector of sleep minutes
-  na.rm = TRUE) # ignore missing values
+  cleaned_data$time_slept_minutes, # finds medien of time slept column
+  na.rm = TRUE) # ignores missing values
 
 # Compute median sleep for each day of the week
 med_by_day <- cleaned_data |> # uses cleaned data
   group_by(day_of_week) |> # group observations by weekday
-  summarize(med_sleep = median(time_slept_minutes, # compute median sleep within each day
+  summarize(med_sleep = median(time_slept_minutes, # compute median w/in each weekday
                                na.rm = TRUE), # remove missing values if any
             .groups = "drop") # ungroups df
 
 # Identify the day with the highest median sleep
-highlight_day <- med_by_day |>
+highlight_day <- med_by_day |> # uses data set with median by day column
   slice_max(med_sleep, n = 1) |> # select row with maximum median sleep
   pull(day_of_week) |> # extract just the weekday value
   as.character() # convert to character
 
 # Store the numeric value of the highest median for annotation text
-highlight_median <- med_by_day |>
+highlight_median <- med_by_day |> # uses data set with median by day column
   filter(day_of_week == highlight_day) |> # selects row with the highest median
   pull(med_sleep) # returns the med_sleep column as a numeric vector
 
@@ -209,13 +200,13 @@ p1_box <-
                     guide = 'none') + # removes legend
   scale_color_manual(values = week_colors, # Apply manual fill color scale
                      guide = "none") + # remove duplicate legend
-  labs(
+  labs( # creates labels
     title = "Sleep Duration by Day of Week", # sets plot title
     x = "Day of week", # sets x-axis title
     y = "Time Slept (minutes)") + # sets y-axis title
   base_theme + # uses preset base theme
   # Add curved arrow annotation highlighting highest median day
-  geom_curve(
+  geom_curve( # creating arrow
     aes(x = highlight_day , # sets arrow starting x-position 
         # sets arrow starting y-position 
         y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.02, 
@@ -227,7 +218,7 @@ p1_box <-
     arrow = arrow(length = unit(0.1, "inches")), # sets arrowhead size
     inherit.aes = FALSE) + # prevents inheriting global aesthetics
   annotate( "text", # Add text label describing highlighted day
-            x = highlight_day, 
+            x = highlight_day, # horizontal position is the highlighted day
             # sets vertical position of label
             y = max(cleaned_data$time_slept_minutes, na.rm = TRUE) * 1.05,
             # creates content of label
@@ -256,7 +247,7 @@ p2_sleep_scatter <-
     name = "Number of days")+ # creates legend title 
   labs(
     title = "Sleep Duration vs Sleep Efficiency", # sets plot title
-    x = "Sleep Efficiency (scale 0-1)", # sets x-axis title
+    x = "Sleep Efficiency (proportion, 0–1)", # sets x-axis title
     y = "Time slept (minutes)") + # sets y-axis title
   base_theme # uses preset base theme
 
@@ -277,7 +268,7 @@ cleaned_data_cal <- cleaned_data |>
                                     "Thursday",
                                     "Friday",
                                     "Saturday",
-                                    "Sunday")),,
+                                    "Sunday")),
     # Create a week index variable
     week = floor_date(date, unit = "week", week_start = 1))
 
@@ -337,15 +328,13 @@ p3_calendar <-
   scale_y_discrete(limits = rev(levels(cleaned_data_cal$weekday))) +
   labs(
     title = "Sleep Calendar", # sets title
-    # sets caption
+    # sets caption text content
     caption = "Green tile = outlier low-sleep day (excluded from the color scale)",
     x = "Week (starting Monday)", # sets x-axis title
     y = NULL) + # no title for y-axis
   base_theme + # uses preset base theme
-  theme(axis.text.x = element_text(angle = 30, hjust = 1), 
-        # sets angle and alignment
-        panel.grid = element_blank())
-        # determines grid
+  theme(axis.text.x = element_text(angle = 30, hjust = 1), # sets angle + alignment
+        panel.grid = element_blank()) # determines grid
 p3_calendar # shows plot 3
 # saves plot 3 with specifications
 ggsave("plot3_calendar_heatmap.png", p3_calendar, width = 10, height = 4.8, dpi = 300)
@@ -414,19 +403,19 @@ The boxplot with jitter highlights how sleep duration varies across the days of 
 
 Outside of the data visualization, what aesthetic choices (e.g. color, font, arrangement) did you make and why? In what way do your choices contribute to a compelling or interesting narrative?
 
-I used custom color palettes including variations of blues for my plots as well as my infographic background and text to create a visually cohesive theme across my infographic and visualizations. Additionally I chose fonts to use for headers (serif) and body text (sans-serif) that remained consistent throughout.  because it aligns visually with the theme of rest and helps maintain cohesion across figures. I also dedcided to use minimal grid lines, consistent legend placement, and text sizes  to keep the focus on the data while creating a polished and cohesive visual narrative.
+I used custom color palettes including variations of blues for my plots as well as my infographic background and text to create a visually cohesive theme across my infographic and visualizations. Additionally, I chose fonts for headers (Playfair Display) and body text (Space Grotesk) that remained consistent throughout all visualizations and the inforgraphic itself. This aligns visually with the theme of text and helps maintain cohesion across figures. I also dedcided to use minimal grid lines, consistent legend placement, and text sizes  to keep the focus on the data while creating a polished and cohesive visual narrative.
 
 ## Sources and process
 
 For each visualization, describe what examples inspired that visualization (cite the author)
 
-My inspiration for the labeling and arrows on my boxplot (plot 1) comes Cédric Scherer's article titled [The Evolution of a ggplot (Ep. 1)](https://www.cedricscherer.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/#final) and I drew the idea for my binned scatterplot (plot 2) from Alboukadel Kassambara's article [ggplot2 scatter plots : Quick start guide - R software and data  visualization](https://www.sthda.com/english/wiki/ggplot2-scatter-plots-quick-start-guide-r-software-and-data-visualization#google_vignette). My inspiration for the heatmap (plot 3) visualization came from Daniel Emaasit's article on [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/ggTimeSeries.html). Lastly, I was inspired to add the dimension of color to my scatter plot from the website [Bubble plot with ggplot2](https://r-graph-gallery.com/320-the-basis-of-bubble-plot.html) created by Yan Holtz.
+My inspiration for the labeling and arrows on my boxplot (plot 1) comes Cédric Scherer's article titled [The Evolution of a ggplot (Ep. 1)](https://www.cedricscherer.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/#final) and I drew inspiration for my binned scatterplot (plot 2) from Alboukadel Kassambara's article [ggplot2 scatter plots : Quick start guide - R software and data  visualization](https://www.sthda.com/english/wiki/ggplot2-scatter-plots-quick-start-guide-r-software-and-data-visualization#google_vignette). My inspiration for the heatmap (plot 3) visualization came from Daniel Emaasit's article on [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/ggTimeSeries.html). Lastly, I was inspired to add the dimension of color to my scatter plot from the website [Bubble plot with ggplot2](https://r-graph-gallery.com/320-the-basis-of-bubble-plot.html) created by Yan Holtz.
 
 Describe your coding process, for example (not the only options for this prompt): did you have to clean up/summarize the data before you started? Which geoms did you start with? What geoms did you end up using, and why?
 
-I first cleaned and prepared the dataset by standardizing column names (using `clean_names()`), converting the date column into a proper date format (using `mutate()`), ordering weekday factors (using `factor()`), and converting sleep efficiency into a numeric proportion (using `parse_number()`) . I created each visualization using geoms including `geom_hline`, `geom_boxplot`, `geom_jitter`, `geom_curve`, `geom_bin2d`, and `geom_tile` the layered geoms to improve interpretation by adding jittered points, reference lines, and arrows. I needed to do transformations on the data for individual plots like grouping by weekday to calculate medians, restructuring the data to create a calendar-style layout, and flagging an outlier in order to remove it from color gradients.
+I first cleaned and prepared the dataset by standardizing column names (using `clean_names()`), converting the date column into a proper date format (using `mutate()`), ordering weekday factors (using `factor()`), and converting sleep efficiency into a numeric proportion (using `parse_number()`) . I created each visualization using geoms to improve interpretation and visual aesthetics including: `geom_hline`(to provide a visual benchmark at the overall median sleep duration, making it easier to compare how each weekday differs from the typical amount of sleep), `geom_boxplot`(summarizes the distribution of sleep duration across weekdays), `geom_point` /`geom_jitter`(shows the individual daily observations to reveal variability and potential clustering), `geom_curve` (to highlight notable features in the data, such as the day with the highest median sleep. For the efficiency plot), `geom_bin2d`(rather than a standard scatter plot to reduce overplotting and more clearly display where observations cluster), and `geom_tile` (to construct a calendar-style heatmap that makes changes in sleep duration across days and weeks easier to interpret). Additional data transformations were required for individual plots, including grouping by weekday to calculate medians, restructuring the data to create a calendar-style layout, and flagging a low-sleep outlier in order to remove it from color gradients.
 
 Describe the tools you used: other people’s code? Google/StackOverflow? ChatGPT (with examples of prompts)?
 
-I used R with the `tidyverse` and `ggplot2` for all data cleaning, transformation, and visualization. Supporting packages such as `lubridate`, `janitor`, `scales`, `showtext`, and `sysfonts` were used to handle dates, clean variable names, format axes, and customize fonts. I also used ChatGPT to troubleshoot issues with commits (prompts like: How can I fix this error?) and improve consistency across plots (prompts asking for ideas to make plots more consistent).
+I used R with the `tidyverse` and `ggplot2` for all data cleaning, transformation, and visualization. Supporting packages such as `lubridate`, `janitor`, `scales`, `showtext`, and `sysfonts` were used to handle dates, clean variable names, format axes, and customize fonts. I also used ChatGPT to troubleshoot issues with commits (prompts like: "How can I fix this error?") and improve cohesiveness across plots (prompts asking for ideas to make plots more consistent).
 
