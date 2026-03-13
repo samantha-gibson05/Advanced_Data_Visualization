@@ -25,4 +25,4 @@ The code in this repository completes the Advanced Data Visualization assignment
 
 ## Rendered output
 
-[Link:](https://samantha-gibson05.github.io/Advanced_Data_Visualization//Code_files/my_code_files/DV_Code.html)
+[Here is the link to my rendered html output](https://samantha-gibson05.github.io/Advanced_Data_Visualization//Code_files/my_code_files/DV_Code.html)
